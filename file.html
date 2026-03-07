@@ -1,21 +1,32 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <title>Medical QR System</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>Medical QR Code</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="script.js" defer></script>
 </head>
-
 <body>
+  <div class="container">
+    <h2>Medical Information QR Code</h2>
+    
+    <!-- Form to generate QR code -->
+    <form id="medicalForm">
+      <input type="text" id="name" placeholder="Full Name">
+      <input type="text" id="age" placeholder="Age">
+      <input type="text" id="blood" placeholder="Blood Type">
+      <input type="text" id="allergies" placeholder="Allergies">
+      <input type="text" id="doctor" placeholder="Doctor Phone">
+      <textarea id="notes" placeholder="Other Notes"></textarea>
+      <button type="button" id="generateBtn">Generate QR Code</button>
+    </form>
 
-<h1>Medical QR Code System</h1>
+    <!-- QR code display -->
+    <div id="qrcode"></div>
 
-<button onclick="generateQR()">Generate QR</button>
-
-<div id="qrcode"></div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="script.js"></script>
-
+    <!-- Display medical info when page opened via QR code -->
+    <div id="displayInfo"></div>
+  </div>
 </body>
 </html>

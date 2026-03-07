@@ -1,0 +1,22 @@
+body{
+    font-family: Arial;
+    background-color: #121212;
+    color: white;
+    text-align: center;
+}
+
+button{
+    background-color: #ff6fa5;
+    border: none;
+    padding: 10px 20px;
+    color: white;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#qrcode{
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+}

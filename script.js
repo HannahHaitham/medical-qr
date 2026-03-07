@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const doctor = document.getElementById("doctor").value.trim();
       const notes = document.getElementById("notes").value.trim();
   
-      const baseURL = "https://hannahhaitham.github.io/medical-qr/";
+      const baseURL = "https://hannahhaitham.github.io/medical-qr/index.html";
       const paramsArray = [];
       if (name) paramsArray.push(`name=${encodeURIComponent(name)}`);
       if (age) paramsArray.push(`age=${encodeURIComponent(age)}`);

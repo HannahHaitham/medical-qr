@@ -134,3 +134,36 @@ button:hover {
     font-size: 15px;
   }
 }
+
+/* QR code styling */
+#qrcode {
+  margin-top: 25px;
+  background-color: white;
+  padding: 20px;       /* slightly more padding for bigger QR */
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  display: flex;       /* center QR code */
+  justify-content: center;
+  align-items: center;
+}
+
+/* Make QR code bigger */
+#qrcode canvas {
+  width: 250px !important;   /* larger QR size */
+  height: 250px !important;
+}
+
+/* Mobile tweak */
+@media (max-width: 500px) {
+  #qrcode canvas {
+      width: 200px !important;  /* smaller on small screens */
+      height: 200px !important;
+  }
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;   /* spacing between buttons */
+  width: 100%;
+}

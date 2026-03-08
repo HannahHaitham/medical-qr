@@ -15,7 +15,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const generateBtn = document.getElementById("confirmBtn");
+  const confirmBtn = document.getElementById("confirmBtn");
   const downloadBtn = document.getElementById("downloadBtn");
   const editBtn = document.getElementById("editBtn");
   const deleteBtn = document.getElementById("deleteBtn");
@@ -37,13 +37,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("doctor").value = data.doctor;
         document.getElementById("notes").value = data.notes;
 
-        // Lock form
         formInputs.forEach(input => input.disabled = true);
         editBtn.style.display = "flex";
         deleteBtn.style.display = "flex";
-        generateBtn.style.display = "none";
+        confirmBtn.style.display = "none";
 
-        // Generate QR
         const url = `https://hannahhaitham.github.io/medical-qr/medical.html?id=${lastID}`;
         qrcodeDiv.innerHTML = "";
         new QRCode(qrcodeDiv, { text: url, width: 200, height: 200, colorDark: "#d6336c", colorLight: "#fff0f6", correctLevel: QRCode.CorrectLevel.H });
@@ -53,7 +51,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // Confirm / Generate
-  generateBtn.addEventListener("click", async () => {
+  confirmBtn.addEventListener("click", async () => {
     const name = document.getElementById("name").value.trim() || "No Name";
     const age = document.getElementById("age").value.trim() || "N/A";
     const blood = document.getElementById("blood").value.trim() || "N/A";
@@ -71,7 +69,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
 
       formInputs.forEach(input => input.disabled = true);
-      generateBtn.style.display = "none";
+      confirmBtn.style.display = "none";
       editBtn.style.display = "flex";
       deleteBtn.style.display = "flex";
 
@@ -86,7 +84,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   editBtn.addEventListener("click", () => {
     formInputs.forEach(input => input.disabled = false);
     editBtn.style.display = "none";
-    generateBtn.style.display = "block";
+    confirmBtn.style.display = "block";
   });
 
   // Delete
@@ -100,7 +98,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       formInputs.forEach(input => input.disabled = false);
       editBtn.style.display = "none";
       deleteBtn.style.display = "none";
-      generateBtn.style.display = "block";
+      confirmBtn.style.display = "block";
       qrcodeDiv.innerHTML = "";
       downloadBtn.style.display = "none";
       localStorage.removeItem("lastMedicalID");

@@ -1,96 +1,52 @@
-document.addEventListener("DOMContentLoaded", () => {
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+import { getFirestore, collection, addDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
-    const generateBtn = document.getElementById("generateBtn");
-    const displayDiv = document.getElementById("displayInfo");
-  
-    // Button click: generate QR immediately
-    generateBtn.addEventListener("click", () => {
-  
-      // Get form values (or default)
-      const name = document.getElementById("name").value.trim() || "No Name";
-      const age = document.getElementById("age").value.trim() || "N/A";
-      const blood = document.getElementById("blood").value.trim() || "N/A";
-      const allergies = document.getElementById("allergies").value.trim() || "N/A";
-      const doctor = document.getElementById("doctor").value.trim() || "N/A";
-      const notes = document.getElementById("notes").value.trim() || "None";
-  
-      // Step 1: Generate QR code immediately
-      const tempURL = `https://hannahhaitham.github.io/medical-qr/index.html?name=${encodeURIComponent(name)}&age=${encodeURIComponent(age)}`;
-      const qrcodeDiv = document.getElementById("qrcode");
-      qrcodeDiv.innerHTML = ""; // clear previous QR
-      new QRCode(qrcodeDiv, {
-        text: tempURL,
-        width: 200,
-        height: 200,
-        colorDark: "#d6336c",
-        colorLight: "#fff0f6",
-        correctLevel: QRCode.CorrectLevel.H
-      });
-  
-      console.log("Temporary QR code generated:", tempURL);
-  
-      // Step 2: Save to Firebase in the background
-      const profileData = { name, age, blood, allergies, doctor, notes };
-  
-      firebase.firestore().collection("medicalProfiles").add(profileData)
-        .then((docRef) => {
-  
-          console.log("Firebase document saved with ID:", docRef.id);
-  
-          // Step 3: Update QR to point to Firebase ID
-          const finalURL = `https://hannahhaitham.github.io/medical-qr/index.html?id=${docRef.id}`;
-          qrcodeDiv.innerHTML = "";
-          new QRCode(qrcodeDiv, {
-            text: finalURL,
-            width: 200,
-            height: 200,
-            colorDark: "#d6336c",
-            colorLight: "#fff0f6",
-            correctLevel: QRCode.CorrectLevel.H
-          });
-  
-          console.log("Final QR code updated with Firebase ID:", finalURL);
-  
-        })
-        .catch((error) => {
-          console.error("Error saving to Firebase:", error);
-          alert("Failed to save to Firebase. Check console.");
-        });
-  
-    });
-  
-  });
-  
-  // Step 4: Fetch and display medical info if URL has ?id=XXXX
+const firebaseConfig = {
+  apiKey: "AIzaSyC1ZgCCR-MakYRbA6Vw9I7QYWmITuOLC2M",
+  authDomain: "medical-qr-50da9.firebaseapp.com",
+  projectId: "medical-qr-50da9",
+  storageBucket: "medical-qr-50da9.firebasestorage.app",
+  messagingSenderId: "918654903799",
+  appId: "1:918654903799:web:fa0d014fb068cb4f993af2",
+  measurementId: "G-KEXK6MYLLC"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const generateBtn = document.getElementById("generateBtn");
+const displayDiv = document.getElementById("displayInfo");
+
+if (displayDiv) {
+  // Display page
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
-  
-  if (id) {
-    const displayDiv = document.getElementById("displayInfo");
-  
-    console.log("Fetching medical info for ID:", id);
-  
-    firebase.firestore().collection("medicalProfiles").doc(id).get()
-      .then((doc) => {
-        if (doc.exists) {
-          const data = doc.data();
-          displayDiv.innerHTML = `
-            <div class="info-card">
-              <h3>Medical Information</h3>
-              <p><strong>Name:</strong> ${data.name}</p>
-              <p><strong>Age:</strong> ${data.age}</p>
-              <p><strong>Blood Type:</strong> ${data.blood}</p>
-              <p><strong>Allergies:</strong> ${data.allergies}</p>
-              <p><strong>Doctor:</strong> ${data.doctor}</p>
-              <p><strong>Notes:</strong> ${data.notes}</p>
-            </div>
-          `;
-        } else {
-          displayDiv.innerHTML = "<p>No medical information found.</p>";
+
+  if (!id) {
+    displayDiv.innerHTML = "<p>No medical ID provided.</p>";
+  } else {
+    getDoc(doc(db, "medicalProfiles", id))
+      .then(docSnap => {
+        if (!docSnap.exists()) {
+          displayDiv.innerHTML = "<p>No medical info found.</p>";
+          return;
         }
+        const data = docSnap.data();
+        displayDiv.innerHTML = `
+          <div class="info-card">
+            <h3>Medical Information</h3>
+            <p><strong>Name:</strong> ${data.name}</p>
+            <p><strong>Age:</strong> ${data.age}</p>
+            <p><strong>Blood Type:</strong> ${data.blood}</p>
+            <p><strong>Allergies:</strong> ${data.allergies}</p>
+            <p><strong>Doctor:</strong> ${data.doctor}</p>
+            <p><strong>Notes:</strong> ${data.notes}</p>
+          </div>
+        `;
       })
-      .catch((err) => {
-        console.error("Error fetching medical info:", err);
-        displayDiv.innerHTML = "<p>Error loading medical information.</p>";
+      .catch(err => {
+        console.error(err);
+        displayDiv.innerHTML = "<p>Error loading info.</p>";
       });
   }
+}

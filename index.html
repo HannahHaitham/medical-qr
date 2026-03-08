@@ -2,30 +2,66 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Medical QR Generator</title>
+  <title>Medical Info</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script type="module" src="script.js" defer></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC1ZgCCR-MakYRbA6Vw9I7QYWmITuOLC2M",
+      authDomain: "medical-qr-50da9.firebaseapp.com",
+      projectId: "medical-qr-50da9",
+      storageBucket: "medical-qr-50da9.firebasestorage.app",
+      messagingSenderId: "918654903799",
+      appId: "1:918654903799:web:fa0d014fb068cb4f993af2",
+      measurementId: "G-KEXK6MYLLC"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      const displayDiv = document.getElementById("displayInfo");
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
+
+      if (!id) {
+        displayDiv.innerHTML = "<p>No medical ID provided.</p>";
+        return;
+      }
+
+      try {
+        const docSnap = await getDoc(doc(db, "medicalProfiles", id));
+        if (!docSnap.exists()) {
+          displayDiv.innerHTML = "<p>No medical info found.</p>";
+          return;
+        }
+
+        const data = docSnap.data();
+        displayDiv.innerHTML = `
+          <div class="info-card">
+            <h3>Medical Information</h3>
+            <p><strong>Name:</strong> ${data.name}</p>
+            <p><strong>Age:</strong> ${data.age}</p>
+            <p><strong>Blood Type:</strong> ${data.blood}</p>
+            <p><strong>Allergies:</strong> ${data.allergies}</p>
+            <p><strong>Doctor:</strong> ${data.doctor}</p>
+            <p><strong>Notes:</strong> ${data.notes}</p>
+          </div>
+        `;
+      } catch (err) {
+        console.error(err);
+        displayDiv.innerHTML = "<p>Error loading medical info.</p>";
+      }
+    });
+  </script>
 </head>
 <body>
   <div class="container">
-    <h2>Medical Information QR Code</h2>
-
-    <form id="medicalForm">
-      <input type="text" id="name" placeholder="Full Name">
-      <input type="text" id="age" placeholder="Age">
-      <input type="text" id="blood" placeholder="Blood Type">
-      <input type="text" id="allergies" placeholder="Allergies">
-      <input type="text" id="doctor" placeholder="Doctor Phone">
-      <textarea id="notes" placeholder="Other Notes"></textarea>
-    </form>
-
-    <div id="qrcode"></div>
-
-    <div class="button-container">
-      <button type="button" id="generateBtn">Generate QR Code</button>
-      <button type="button" id="downloadBtn" style="display:none;">Download QR Code</button>
-    </div>
+    <h2>Medical Info</h2>
+    <div id="displayInfo"></div>
   </div>
 </body>
 </html>

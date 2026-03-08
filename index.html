@@ -5,11 +5,12 @@
   <title>Medical QR Generator</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script type="module" src="script.js"></script>
+  <script type="module" src="script.js" defer></script>
 </head>
 <body>
   <div class="container">
     <h2>Medical Information QR Code</h2>
+
     <form id="medicalForm">
       <input type="text" id="name" placeholder="Full Name">
       <input type="text" id="age" placeholder="Age">
@@ -17,65 +18,14 @@
       <input type="text" id="allergies" placeholder="Allergies">
       <input type="text" id="doctor" placeholder="Doctor Phone">
       <textarea id="notes" placeholder="Other Notes"></textarea>
-      <button type="button" id="generateBtn">Generate QR Code</button>
     </form>
+
     <div id="qrcode"></div>
-    <button type="button" id="downloadBtn">Download QR Code</button>
+
+    <div class="button-container">
+      <button type="button" id="generateBtn">Generate QR Code</button>
+      <button type="button" id="downloadBtn" style="display:none;">Download QR Code</button>
+    </div>
   </div>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyC1ZgCCR-MakYRbA6Vw9I7QYWmITuOLC2M",
-      authDomain: "medical-qr-50da9.firebaseapp.com",
-      projectId: "medical-qr-50da9",
-      storageBucket: "medical-qr-50da9.firebasestorage.app",
-      messagingSenderId: "918654903799",
-      appId: "1:918654903799:web:fa0d014fb068cb4f993af2",
-      measurementId: "G-KEXK6MYLLC"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    const generateBtn = document.getElementById("generateBtn");
-
-    generateBtn.addEventListener("click", async () => {
-      const name = document.getElementById("name").value.trim() || "No Name";
-      const age = document.getElementById("age").value.trim() || "N/A";
-      const blood = document.getElementById("blood").value.trim() || "N/A";
-      const allergies = document.getElementById("allergies").value.trim() || "N/A";
-      const doctor = document.getElementById("doctor").value.trim() || "N/A";
-      const notes = document.getElementById("notes").value.trim() || "None";
-
-      try {
-        const docRef = await addDoc(collection(db, "medicalProfiles"), {
-          name, age, blood, allergies, doctor, notes
-        });
-
-        const id = docRef.id;
-        const qrcodeDiv = document.getElementById("qrcode");
-        qrcodeDiv.innerHTML = "";
-
-        const url = `https://hannahhaitham.github.io/medical-qr/medical.html?id=${id}`;
-
-        new QRCode(qrcodeDiv, {
-          text: url,
-          width: 200,
-          height: 200,
-          colorDark: "#d6336c",
-          colorLight: "#fff0f6",
-          correctLevel: QRCode.CorrectLevel.H
-        });
-
-        console.log("QR code generated:", url);
-      } catch (err) {
-        console.error("Error saving to Firestore:", err);
-        alert("Failed to save info. Check console.");
-      }
-    });
-  </script>
 </body>
 </html>

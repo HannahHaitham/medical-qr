@@ -1,8 +1,8 @@
 /* General page styling */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #fff0f6; /* soft pink */
-  color: #4a004d; /* dark purple */
+  background-color: #fff0f6;
+  color: #4a004d;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -21,9 +21,9 @@ body {
   align-items: center;
 }
 
-/* Top-right button container */
+/* Top-right buttons */
 .top-buttons {
-  position: fixed;   /* fixed to viewport top-right */
+  position: fixed;
   top: 10px;
   right: 10px;
   display: flex;
@@ -31,10 +31,9 @@ body {
   z-index: 999;
 }
 
-/* Icon buttons without circle */
 .icon-btn {
-  display: none;        /* hidden by default */
-  padding: 4px;
+  display: none;
+  padding: 6px;
   border: none;
   background: transparent;
   cursor: pointer;
@@ -48,7 +47,6 @@ body {
   height: 20px;
 }
 
-/* Hover tooltip handled by title attribute */
 .icon-btn:hover svg {
   filter: brightness(0.85);
 }
@@ -116,7 +114,7 @@ button:hover {
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-/* Medical info card style */
+/* Medical info card */
 #displayInfo {
   margin-top: 25px;
   width: 100%;
@@ -140,24 +138,77 @@ button:hover {
   margin: 5px 0;
 }
 
+/* Modal styling */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5); /* dark background */
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+  background-color: #fff0f6;
+  border: 2px solid #d6336c;
+  border-radius: 15px;
+  padding: 25px;
+  text-align: center;
+  width: 90%;
+  max-width: 300px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transform: translateY(-50px);
+  animation: slideDown 0.3s forwards;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.modal-buttons button {
+  flex: 1;
+  margin: 0 5px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+#confirmDelete {
+  background-color: #e64980;
+  color: white;
+}
+
+#cancelDelete {
+  background-color: #fff;
+  color: #d6336c;
+  border: 2px solid #d6336c;
+}
+
+#confirmDelete:hover { background-color: #d6336c; }
+#cancelDelete:hover { background-color: #f5c0d9; }
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slideDown {
+  from { transform: translateY(-50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
 /* Responsive tweaks */
 @media (max-width: 500px) {
-  form {
-      padding: 20px;
-  }
-  input, textarea {
-      font-size: 13px;
-  }
-  button {
-      font-size: 15px;
-  }
-  .top-buttons {
-      gap: 6px;
-      top: 5px;
-      right: 5px;
-  }
-  .icon-btn svg {
-      width: 16px;
-      height: 16px;
-  }
+  form { padding: 20px; }
+  input, textarea { font-size: 13px; }
+  button { font-size: 15px; }
+  .top-buttons { gap: 8px; top: 8px; right: 8px; }
+  .icon-btn svg { width: 28px; height: 28px; }
 }

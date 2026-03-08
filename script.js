@@ -21,6 +21,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   const deleteBtn = document.getElementById("deleteBtn");
   const qrcodeDiv = document.getElementById("qrcode");
   const formInputs = document.querySelectorAll("#medicalForm input, #medicalForm textarea");
+  const deleteModal = document.getElementById("deleteModal");
+  const confirmDeleteBtn = document.getElementById("confirmDelete");
+  const cancelDeleteBtn = document.getElementById("cancelDelete");
 
   let lastID = localStorage.getItem("lastMedicalID");
 
@@ -87,10 +90,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     confirmBtn.style.display = "block";
   });
 
-  // Delete
-  deleteBtn.addEventListener("click", async () => {
+  // Delete (show modal)
+  deleteBtn.addEventListener("click", () => {
+    deleteModal.style.display = "flex";
+  });
+
+  // Cancel delete
+  cancelDeleteBtn.addEventListener("click", () => {
+    deleteModal.style.display = "none";
+  });
+
+  // Confirm delete
+  confirmDeleteBtn.addEventListener("click", async () => {
+    deleteModal.style.display = "none";
     if (!lastID) return;
-    if (!confirm("Are you sure you want to delete your saved medical info?")) return;
 
     try {
       await setDoc(doc(db, "medicalProfiles", lastID), { name: "", age: "", blood: "", allergies: "", doctor: "", notes: "" });

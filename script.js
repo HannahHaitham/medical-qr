@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
       qrcodeDiv.innerHTML = "";
 
       // Use absolute URL to GitHub Pages
-      const url = `https://${window.location.hostname}/medical.html?id=${id}`;
+      const url = `https://hannahhaitham.github.io/medical-id/?id=${id}`;
 
       // Generate QR code
       new QRCode(qrcodeDiv, {

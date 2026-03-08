@@ -1,34 +1,13 @@
 document.addEventListener("DOMContentLoaded", () => {
+
     const generateBtn = document.getElementById("generateBtn");
     const displayDiv = document.getElementById("displayInfo");
   
-    // Function to get URL parameters
-    function getParams() {
-      const params = {};
-      const queryString = window.location.search.slice(1);
-      if (!queryString) return params;
-      queryString.split("&").forEach(pair => {
-        const [key, value] = pair.split("=");
-        params[key] = decodeURIComponent(value.replace(/\+/g, " "));
-      });
-      return params;
-    }
+    console.log("Firebase db object:", firebase, firebase.firestore());
   
-    // Display info if page opened via QR code
-    const params = getParams();
-    if (Object.keys(params).length > 0) {
-      let html = '<div class="info-card"><h3>Medical Info</h3>';
-      for (const key in params) {
-        html += `<p><strong>${key.charAt(0).toUpperCase() + key.slice(1)}:</strong> ${params[key]}</p>`;
-      }
-      html += "</div>";
-      displayDiv.innerHTML = html;
-    }
-  
-    // Generate QR code linking to GitHub Pages with URL parameters
     generateBtn.addEventListener("click", () => {
-      const qrcodeDiv = document.getElementById("qrcode");
-      qrcodeDiv.innerHTML = "";
+  
+      console.log("Generate button clicked");
   
       const name = document.getElementById("name").value.trim();
       const age = document.getElementById("age").value.trim();
@@ -37,24 +16,71 @@ document.addEventListener("DOMContentLoaded", () => {
       const doctor = document.getElementById("doctor").value.trim();
       const notes = document.getElementById("notes").value.trim();
   
-      const baseURL = "https://hannahhaitham.github.io/medical-qr/index.html";
-      const paramsArray = [];
-      if (name) paramsArray.push(`name=${encodeURIComponent(name)}`);
-      if (age) paramsArray.push(`age=${encodeURIComponent(age)}`);
-      if (blood) paramsArray.push(`blood=${encodeURIComponent(blood)}`);
-      if (allergies) paramsArray.push(`allergies=${encodeURIComponent(allergies)}`);
-      if (doctor) paramsArray.push(`doctor=${encodeURIComponent(doctor)}`);
-      if (notes) paramsArray.push(`notes=${encodeURIComponent(notes)}`);
+      const profileData = { name, age, blood, allergies, doctor, notes };
   
-      const fullURL = paramsArray.length > 0 ? `${baseURL}?${paramsArray.join("&")}` : baseURL;
+      // Save profile to Firebase
+      firebase.firestore().collection("medicalProfiles").add(profileData)
+        .then((docRef) => {
   
-      new QRCode(qrcodeDiv, {
-        text: fullURL,
-        width: 200,
-        height: 200,
-        colorDark: "#d6336c",
-        colorLight: "#fff0f6",
-        correctLevel: QRCode.CorrectLevel.H
-      });
+          console.log("Document written with ID:", docRef.id);
+  
+          const id = docRef.id;
+          const url = `https://hannahhaitham.github.io/medical-qr/index.html?id=${id}`;
+  
+          // Generate QR code
+          const qrcodeDiv = document.getElementById("qrcode");
+          qrcodeDiv.innerHTML = "";
+          new QRCode(qrcodeDiv, {
+            text: url,
+            width: 200,
+            height: 200,
+            colorDark: "#d6336c",
+            colorLight: "#fff0f6",
+            correctLevel: QRCode.CorrectLevel.H
+          });
+  
+          console.log("QR code generated for URL:", url);
+  
+        })
+        .catch((error) => {
+          console.error("Error saving document:", error);
+          alert("Error saving medical info. Check console.");
+        });
+  
     });
+  
   });
+  
+  // ----- Fetch medical info when visiting ?id=xxxx -----
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
+  
+  if (id) {
+    const displayDiv = document.getElementById("displayInfo");
+  
+    console.log("Fetching medical info for ID:", id);
+  
+    firebase.firestore().collection("medicalProfiles").doc(id).get()
+      .then((doc) => {
+        if (doc.exists) {
+          const data = doc.data();
+          displayDiv.innerHTML = `
+            <div class="info-card">
+              <h3>Medical Information</h3>
+              <p><strong>Name:</strong> ${data.name}</p>
+              <p><strong>Age:</strong> ${data.age}</p>
+              <p><strong>Blood Type:</strong> ${data.blood}</p>
+              <p><strong>Allergies:</strong> ${data.allergies}</p>
+              <p><strong>Doctor:</strong> ${data.doctor}</p>
+              <p><strong>Notes:</strong> ${data.notes}</p>
+            </div>
+          `;
+        } else {
+          displayDiv.innerHTML = "<p>No medical information found.</p>";
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching medical info:", err);
+        displayDiv.innerHTML = "<p>Error loading medical information.</p>";
+      });
+  }

@@ -23,7 +23,7 @@ body {
 
 /* Top-right buttons */
 .top-buttons {
-  position: fixed;
+  position: absolute; /* scrolls with page */
   top: 10px;
   right: 10px;
   display: flex;
@@ -215,6 +215,7 @@ button:hover {
 
   .container {
     max-width: 95%;
+    padding-top: 70px; /* space for top buttons and heading */
   }
 
   h2 {
@@ -241,14 +242,14 @@ button:hover {
   }
 
   .top-buttons {
-    gap: 10px;
+    flex-direction: row; /* buttons next to each other */
+    gap: 6px;            /* slightly smaller gap */
     top: 10px;
     right: 10px;
   }
 
   .icon-btn svg {
-    width: 32px;
-    height: 32px;
+    width: 22px;  /* slightly smaller icons */
+    height: 22px;
   }
-
 }

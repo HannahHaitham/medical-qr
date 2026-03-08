@@ -21,7 +21,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const downloadBtn = document.getElementById("downloadBtn");
   const qrcodeDiv = document.getElementById("qrcode");
 
-  // Hide download initially
   downloadBtn.style.display = "none";
 
   generateBtn.addEventListener("click", async () => {
@@ -33,6 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const notes = document.getElementById("notes").value.trim() || "None";
 
     try {
+      // Save to Firestore
       const docRef = await addDoc(collection(db, "medicalProfiles"), {
         name, age, blood, allergies, doctor, notes
       });
@@ -40,8 +40,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const id = docRef.id;
       qrcodeDiv.innerHTML = "";
 
-      const url = `https://hannahhaitham.github.io/medical-qr/medical.html?id=${id}`;
+      // Use absolute URL to GitHub Pages
+      const url = `https://${window.location.hostname}/medical.html?id=${id}`;
 
+      // Generate QR code
       new QRCode(qrcodeDiv, {
         text: url,
         width: 200,
@@ -51,13 +53,12 @@ document.addEventListener("DOMContentLoaded", () => {
         correctLevel: QRCode.CorrectLevel.H
       });
 
-      // Show download button, hide generate
       generateBtn.style.display = "none";
       downloadBtn.style.display = "block";
 
     } catch (err) {
       console.error("Error saving to Firestore:", err);
-      alert("Failed to save info. Check console.");
+      alert("Failed to save info. Check console for details.");
     }
   });
 

@@ -147,7 +147,7 @@ button:hover {
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0,0,0,0.5); /* dark background */
+  background-color: rgba(0,0,0,0.5);
   justify-content: center;
   align-items: center;
   animation: fadeIn 0.3s ease;
@@ -191,14 +191,20 @@ button:hover {
   border: 2px solid #d6336c;
 }
 
-#confirmDelete:hover { background-color: #d6336c; }
-#cancelDelete:hover { background-color: #f5c0d9; }
+#confirmDelete:hover {
+  background-color: #d6336c;
+}
+
+#cancelDelete:hover {
+  background-color: #f5c0d9;
+}
 
 /* Animations */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
 @keyframes slideDown {
   from { transform: translateY(-50px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
@@ -206,9 +212,43 @@ button:hover {
 
 /* Responsive tweaks */
 @media (max-width: 500px) {
-  form { padding: 20px; }
-  input, textarea { font-size: 13px; }
-  button { font-size: 15px; }
-  .top-buttons { gap: 8px; top: 8px; right: 8px; }
-  .icon-btn svg { width: 28px; height: 28px; }
+
+  .container {
+    max-width: 95%;
+  }
+
+  h2 {
+    font-size: 22px;
+  }
+
+  form {
+    padding: 24px 22px;
+  }
+
+  input, textarea {
+    font-size: 16px;
+    padding: 14px 14px;
+  }
+
+  button {
+    font-size: 16px;
+    padding: 14px;
+  }
+
+  #qrcode canvas {
+    width: 220px !important;
+    height: 220px !important;
+  }
+
+  .top-buttons {
+    gap: 10px;
+    top: 10px;
+    right: 10px;
+  }
+
+  .icon-btn svg {
+    width: 32px;
+    height: 32px;
+  }
+
 }

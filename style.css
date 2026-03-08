@@ -1,27 +1,61 @@
 /* General page styling */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #fff0f6; /* soft pink background */
-  color: #4a004d; /* dark purple text */
+  background-color: #fff0f6; /* soft pink */
+  color: #4a004d; /* dark purple */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
+  position: relative;
+}
+
+.container {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 30px;
 }
 
-/* Container */
-.container {
+/* Top-right button container */
+.top-buttons {
+  position: fixed;   /* fixed to viewport top-right */
+  top: 10px;
+  right: 10px;
   display: flex;
-  flex-direction: column;
-  align-items: center; /* keeps everything centered horizontally */
-  width: 100%;
-  max-width: 500px;
-  box-sizing: border-box; /* includes padding in width calculation */
+  gap: 8px;
+  z-index: 999;
+}
+
+/* Icon buttons without circle */
+.icon-btn {
+  display: none;        /* hidden by default */
+  padding: 4px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.icon-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Hover tooltip handled by title attribute */
+.icon-btn:hover svg {
+  filter: brightness(0.85);
 }
 
 /* Heading */
 h2 {
-  color: #d6336c; /* bright pink */
+  color: #d6336c;
   margin-bottom: 20px;
 }
 
@@ -32,30 +66,30 @@ form {
   border-radius: 15px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* Inputs and textarea */
 input, textarea {
   display: block;
   width: 100%;
-  max-width: 100%; /* prevents overflow */
   margin: 12px 0;
   padding: 10px 12px;
   border: 2px solid #ffc9e3;
   border-radius: 10px;
   font-size: 14px;
   transition: 0.3s;
-  box-sizing: border-box; /* includes padding and border in width */
 }
 
-/* Focus effect */
 input:focus, textarea:focus {
   border-color: #d6336c;
   outline: none;
   box-shadow: 0 0 5px rgba(214,51,108,0.5);
 }
 
-/* Button */
+/* Buttons */
 button {
   background-color: #d6336c;
   color: white;
@@ -106,7 +140,7 @@ button:hover {
   margin: 5px 0;
 }
 
-/* Small responsive tweak */
+/* Responsive tweaks */
 @media (max-width: 500px) {
   form {
       padding: 20px;
@@ -116,5 +150,14 @@ button:hover {
   }
   button {
       font-size: 15px;
+  }
+  .top-buttons {
+      gap: 6px;
+      top: 5px;
+      right: 5px;
+  }
+  .icon-btn svg {
+      width: 16px;
+      height: 16px;
   }
 }

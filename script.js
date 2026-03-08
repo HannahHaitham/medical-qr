@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getFirestore, collection, addDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC1ZgCCR-MakYRbA6Vw9I7QYWmITuOLC2M",
@@ -15,14 +15,16 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const generateBtn = document.getElementById("generateBtn");
+  const generateBtn = document.getElementById("confirmBtn");
   const downloadBtn = document.getElementById("downloadBtn");
+  const editBtn = document.getElementById("editBtn");
+  const deleteBtn = document.getElementById("deleteBtn");
   const qrcodeDiv = document.getElementById("qrcode");
+  const formInputs = document.querySelectorAll("#medicalForm input, #medicalForm textarea");
 
-  downloadBtn.style.display = "none";
-
-  // Load last saved info if exists
   let lastID = localStorage.getItem("lastMedicalID");
+
+  // Load saved info
   if (lastID) {
     try {
       const docSnap = await getDoc(doc(db, "medicalProfiles", lastID));
@@ -35,27 +37,22 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("doctor").value = data.doctor;
         document.getElementById("notes").value = data.notes;
 
-        // Generate QR code immediately for existing ID
+        // Lock form
+        formInputs.forEach(input => input.disabled = true);
+        editBtn.style.display = "flex";
+        deleteBtn.style.display = "flex";
+        generateBtn.style.display = "none";
+
+        // Generate QR
         const url = `https://hannahhaitham.github.io/medical-qr/medical.html?id=${lastID}`;
         qrcodeDiv.innerHTML = "";
-        new QRCode(qrcodeDiv, {
-          text: url,
-          width: 200,
-          height: 200,
-          colorDark: "#d6336c",
-          colorLight: "#fff0f6",
-          correctLevel: QRCode.CorrectLevel.H
-        });
-
-        generateBtn.style.display = "none";
+        new QRCode(qrcodeDiv, { text: url, width: 200, height: 200, colorDark: "#d6336c", colorLight: "#fff0f6", correctLevel: QRCode.CorrectLevel.H });
         downloadBtn.style.display = "block";
       }
-    } catch (err) {
-      console.error("Error loading last saved data:", err);
-    }
+    } catch (err) { console.error(err); }
   }
 
-  // Generate button click
+  // Confirm / Generate
   generateBtn.addEventListener("click", async () => {
     const name = document.getElementById("name").value.trim() || "No Name";
     const age = document.getElementById("age").value.trim() || "N/A";
@@ -65,46 +62,56 @@ document.addEventListener("DOMContentLoaded", async () => {
     const notes = document.getElementById("notes").value.trim() || "None";
 
     try {
-      // If lastID exists, reuse it; otherwise, create new document
       if (!lastID) {
-        const docRef = await addDoc(collection(db, "medicalProfiles"), {
-          name, age, blood, allergies, doctor, notes
-        });
+        const docRef = await addDoc(collection(db, "medicalProfiles"), { name, age, blood, allergies, doctor, notes });
         lastID = docRef.id;
         localStorage.setItem("lastMedicalID", lastID);
       } else {
-        // Optionally: update existing Firestore doc if you want edits saved
-        // await setDoc(doc(db, "medicalProfiles", lastID), {name, age, blood, allergies, doctor, notes});
+        await setDoc(doc(db, "medicalProfiles", lastID), { name, age, blood, allergies, doctor, notes });
       }
 
-      // Generate QR code
+      formInputs.forEach(input => input.disabled = true);
+      generateBtn.style.display = "none";
+      editBtn.style.display = "flex";
+      deleteBtn.style.display = "flex";
+
       const url = `https://hannahhaitham.github.io/medical-qr/medical.html?id=${lastID}`;
       qrcodeDiv.innerHTML = "";
-      new QRCode(qrcodeDiv, {
-        text: url,
-        width: 200,
-        height: 200,
-        colorDark: "#d6336c",
-        colorLight: "#fff0f6",
-        correctLevel: QRCode.CorrectLevel.H
-      });
-
-      generateBtn.style.display = "none";
+      new QRCode(qrcodeDiv, { text: url, width: 200, height: 200, colorDark: "#d6336c", colorLight: "#fff0f6", correctLevel: QRCode.CorrectLevel.H });
       downloadBtn.style.display = "block";
-
-    } catch (err) {
-      console.error("Error saving to Firestore:", err);
-      alert("Failed to save info. Check console for details.");
-    }
+    } catch (err) { console.error(err); alert("Failed to save info."); }
   });
 
-  // Download QR code
+  // Edit
+  editBtn.addEventListener("click", () => {
+    formInputs.forEach(input => input.disabled = false);
+    editBtn.style.display = "none";
+    generateBtn.style.display = "block";
+  });
+
+  // Delete
+  deleteBtn.addEventListener("click", async () => {
+    if (!lastID) return;
+    if (!confirm("Are you sure you want to delete your saved medical info?")) return;
+
+    try {
+      await setDoc(doc(db, "medicalProfiles", lastID), { name: "", age: "", blood: "", allergies: "", doctor: "", notes: "" });
+      formInputs.forEach(input => input.value = "");
+      formInputs.forEach(input => input.disabled = false);
+      editBtn.style.display = "none";
+      deleteBtn.style.display = "none";
+      generateBtn.style.display = "block";
+      qrcodeDiv.innerHTML = "";
+      downloadBtn.style.display = "none";
+      localStorage.removeItem("lastMedicalID");
+      lastID = null;
+    } catch (err) { console.error(err); alert("Failed to delete info."); }
+  });
+
+  // Download QR
   downloadBtn.addEventListener("click", () => {
     const qrCanvas = qrcodeDiv.querySelector("canvas");
-    if (!qrCanvas) {
-      alert("Please generate a QR code first!");
-      return;
-    }
+    if (!qrCanvas) { alert("Generate QR first!"); return; }
     const imageURL = qrCanvas.toDataURL("image/png");
     const link = document.createElement("a");
     link.href = imageURL;

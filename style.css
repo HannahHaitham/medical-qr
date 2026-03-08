@@ -19,15 +19,16 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-top: 0; /* normal desktop padding */
 }
 
 /* Top-right buttons */
 .top-buttons {
-  position: absolute; /* scrolls with page */
-  top: 10px;
+  position: fixed; /* stick to screen, independent of scroll */
+  top: 20px;       /* more space from top of viewport */
   right: 10px;
   display: flex;
-  gap: 8px;
+  gap: 12px;       /* space between icons */
   z-index: 999;
 }
 
@@ -215,7 +216,7 @@ button:hover {
 
   .container {
     max-width: 95%;
-    padding-top: 70px; /* space for top buttons and heading */
+    padding-top: 120px; /* more space to avoid overlapping fixed buttons */
   }
 
   h2 {
@@ -242,14 +243,13 @@ button:hover {
   }
 
   .top-buttons {
-    flex-direction: row; /* buttons next to each other */
-    gap: 6px;            /* slightly smaller gap */
-    top: 10px;
+    gap: 10px;       /* space between the icons */
+    top: 20px;       /* distance from top of viewport */
     right: 10px;
   }
 
   .icon-btn svg {
-    width: 22px;  /* slightly smaller icons */
-    height: 22px;
+    width: 28px;     /* slightly larger for tapping on phones */
+    height: 28px;
   }
 }

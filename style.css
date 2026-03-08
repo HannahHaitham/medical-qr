@@ -1,8 +1,8 @@
-/* General page styling */
+/* GENERAL STYLING */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #fff0f6;
-  color: #4a004d;
+  background-color: #ffffff;
+  color: #1da1f2;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -10,8 +10,15 @@ body {
   margin: 0;
   padding: 20px;
   position: relative;
+  transition: background-color 0.3s, color 0.3s;
 }
 
+body.dark-mode {
+  background-color: #121212;
+  color: #a0cfff;
+}
+
+/* CONTAINER */
 .container {
   position: relative;
   width: 100%;
@@ -19,17 +26,16 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 0; /* normal desktop padding */
 }
 
-/* Top-right buttons */
+/* TOP-RIGHT BUTTONS */
 .top-buttons {
-  position: fixed; /* stick to screen, independent of scroll */
-  top: 20px;       /* more space from top of viewport */
-  right: 10px;
+  position: fixed;
+  top: 20px;
+  right: 20px;
   display: flex;
-  gap: 12px;       /* space between icons */
-  z-index: 999;
+  gap: 10px;
+  z-index: 1100;
 }
 
 .icon-btn {
@@ -44,21 +50,21 @@ body {
 }
 
 .icon-btn svg {
-  width: 20px;
-  height: 20px;
+  width: 28px;
+  height: 28px;
 }
 
 .icon-btn:hover svg {
   filter: brightness(0.85);
 }
 
-/* Heading */
+/* HEADING */
 h2 {
-  color: #d6336c;
+  color: #1da1f2;
   margin-bottom: 20px;
 }
 
-/* Form styling */
+/* FORM STYLING */
 form {
   background-color: #ffffff;
   padding: 25px 30px;
@@ -68,29 +74,39 @@ form {
   display: flex;
   flex-direction: column;
   align-items: center;
+  transition: background-color 0.3s, color 0.3s;
 }
 
-/* Inputs and textarea */
+body.dark-mode form {
+  background-color: #1f1f1f;
+}
+
+/* INPUTS */
 input, textarea {
   display: block;
   width: 100%;
   margin: 12px 0;
   padding: 10px 12px;
-  border: 2px solid #ffc9e3;
+  border: 2px solid #c0e6ff;
   border-radius: 10px;
   font-size: 14px;
   transition: 0.3s;
 }
 
 input:focus, textarea:focus {
-  border-color: #d6336c;
+  border-color: #1da1f2;
   outline: none;
-  box-shadow: 0 0 5px rgba(214,51,108,0.5);
+  box-shadow: 0 0 5px rgba(29,162,242,0.5);
 }
 
-/* Buttons */
+body.dark-mode input, body.dark-mode textarea {
+  background-color: #2a2a2a;
+  color: #a0cfff;
+}
+
+/* BUTTONS */
 button {
-  background-color: #d6336c;
+  background-color: #1da1f2;
   color: white;
   padding: 10px 18px;
   border: none;
@@ -103,10 +119,10 @@ button {
 }
 
 button:hover {
-  background-color: #e64980;
+  background-color: #42b8ff;
 }
 
-/* QR code styling */
+/* QR CODE */
 #qrcode {
   margin-top: 25px;
   background-color: white;
@@ -115,35 +131,32 @@ button:hover {
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-/* Medical info card */
-#displayInfo {
-  margin-top: 25px;
-  width: 100%;
+body.dark-mode #qrcode {
+  background-color: #2a2a2a;
 }
 
+/* INFO CARD */
 .info-card {
-  background-color: #ffe6f0;
-  border: 2px solid #d6336c;
+  background-color: #e0f5ff;
+  border: 2px solid #1da1f2;
   border-radius: 12px;
   padding: 15px 20px;
   margin-bottom: 15px;
   box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  transition: background-color 0.3s, color 0.3s;
 }
 
-.info-card h3 {
-  margin-top: 0;
-  color: #d6336c;
+body.dark-mode .info-card {
+  background-color: #1f1f1f;
+  border-color: #42b8ff;
+  color: #a0cfff;
 }
 
-.info-card p {
-  margin: 5px 0;
-}
-
-/* Modal styling */
+/* MODALS */
 .modal {
   display: none;
   position: fixed;
-  z-index: 1000;
+  z-index: 1200;
   left: 0;
   top: 0;
   width: 100%;
@@ -151,12 +164,11 @@ button:hover {
   background-color: rgba(0,0,0,0.5);
   justify-content: center;
   align-items: center;
-  animation: fadeIn 0.3s ease;
 }
 
 .modal-content {
-  background-color: #fff0f6;
-  border: 2px solid #d6336c;
+  background-color: #ffffff;
+  border: 2px solid #1da1f2;
   border-radius: 15px;
   padding: 25px;
   text-align: center;
@@ -165,6 +177,13 @@ button:hover {
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   transform: translateY(-50px);
   animation: slideDown 0.3s forwards;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark-mode .modal-content {
+  background-color: #1f1f1f;
+  color: #a0cfff;
+  border-color: #42b8ff;
 }
 
 .modal-buttons {
@@ -182,74 +201,116 @@ button:hover {
 }
 
 #confirmDelete {
-  background-color: #e64980;
+  background-color: #42b8ff;
   color: white;
 }
 
 #cancelDelete {
   background-color: #fff;
-  color: #d6336c;
-  border: 2px solid #d6336c;
+  color: #1da1f2;
+  border: 2px solid #1da1f2;
 }
 
 #confirmDelete:hover {
-  background-color: #d6336c;
+  background-color: #1da1f2;
 }
 
 #cancelDelete:hover {
-  background-color: #f5c0d9;
+  background-color: #c0e6ff;
 }
 
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
+/* ANIMATIONS */
 @keyframes slideDown {
   from { transform: translateY(-50px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
 
-/* Responsive tweaks */
-@media (max-width: 500px) {
+/* PROFILE PANEL */
+.profile-btn {
+  position: fixed;
+  top: 20px;
+  left: 10px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid #1da1f2;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 1100;
+  transition: left 0.3s;
+}
 
-  .container {
-    max-width: 95%;
-    padding-top: 120px; /* more space to avoid overlapping fixed buttons */
-  }
+.profile-btn img.profile-pic {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+}
 
-  h2 {
-    font-size: 22px;
-  }
+#profilePanel {
+  position: fixed;
+  top: 0;
+  left: -260px;
+  width: 250px;
+  height: 100%;
+  background-color: #ffffff;
+  border-right: 2px solid #1da1f2;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+  padding: 20px;
+  transition: left 0.3s, background-color 0.3s, color 0.3s;
+  z-index: 1000;
+}
 
-  form {
-    padding: 24px 22px;
-  }
+body.dark-mode #profilePanel {
+  background-color: #1f1f1f;
+  color: #a0cfff;
+  border-color: #42b8ff;
+}
 
-  input, textarea {
-    font-size: 16px;
-    padding: 14px 14px;
-  }
+.toggle-container {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+  gap: 10px;
+}
 
-  button {
-    font-size: 16px;
-    padding: 14px;
-  }
+#sunIcon, #moonIcon {
+  width: 24px;
+  height: 24px;
+  transition: transform 0.5s;
+}
 
-  #qrcode canvas {
-    width: 220px !important;
-    height: 220px !important;
-  }
+.rotate-icon {
+  transform: rotate(360deg);
+}
 
-  .top-buttons {
-    gap: 10px;       /* space between the icons */
-    top: 20px;       /* distance from top of viewport */
-    right: 10px;
-  }
+.switch {
+  position: relative;
+  width: 50px;
+  height: 28px;
+}
 
-  .icon-btn svg {
-    width: 28px;     /* slightly larger for tapping on phones */
-    height: 28px;
-  }
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  border-radius: 34px;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: #1da1f2;
 }

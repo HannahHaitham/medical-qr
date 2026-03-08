@@ -15,6 +15,8 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 document.addEventListener("DOMContentLoaded", async () => {
+
+  // ELEMENTS
   const confirmBtn = document.getElementById("confirmBtn");
   const downloadBtn = document.getElementById("downloadBtn");
   const editBtn = document.getElementById("editBtn");
@@ -25,9 +27,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   const confirmDeleteBtn = document.getElementById("confirmDelete");
   const cancelDeleteBtn = document.getElementById("cancelDelete");
 
+  const profileBtn = document.querySelector(".profile-btn");
+  const profilePanel = document.getElementById("profilePanel");
+  const darkModeToggle = document.getElementById("darkModeToggle");
+  const sunIcon = document.getElementById("sunIcon");
+  const moonIcon = document.getElementById("moonIcon");
+
   let lastID = localStorage.getItem("lastMedicalID");
 
-  // Load saved info
+  // LOAD SAVED INFO
   if (lastID) {
     try {
       const docSnap = await getDoc(doc(db, "medicalProfiles", lastID));
@@ -47,13 +55,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const url = `https://hannahhaitham.github.io/medical-qr/medical.html?id=${lastID}`;
         qrcodeDiv.innerHTML = "";
-        new QRCode(qrcodeDiv, { text: url, width: 200, height: 200, colorDark: "#d6336c", colorLight: "#fff0f6", correctLevel: QRCode.CorrectLevel.H });
+        new QRCode(qrcodeDiv, { text: url, width: 200, height: 200, colorDark: "#1da1f2", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
         downloadBtn.style.display = "block";
       }
     } catch (err) { console.error(err); }
   }
 
-  // Confirm / Generate
+  // CONFIRM / GENERATE
   confirmBtn.addEventListener("click", async () => {
     const name = document.getElementById("name").value.trim() || "No Name";
     const age = document.getElementById("age").value.trim() || "N/A";
@@ -78,29 +86,22 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       const url = `https://hannahhaitham.github.io/medical-qr/medical.html?id=${lastID}`;
       qrcodeDiv.innerHTML = "";
-      new QRCode(qrcodeDiv, { text: url, width: 200, height: 200, colorDark: "#d6336c", colorLight: "#fff0f6", correctLevel: QRCode.CorrectLevel.H });
+      new QRCode(qrcodeDiv, { text: url, width: 200, height: 200, colorDark: "#1da1f2", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
       downloadBtn.style.display = "block";
     } catch (err) { console.error(err); alert("Failed to save info."); }
   });
 
-  // Edit
+  // EDIT
   editBtn.addEventListener("click", () => {
     formInputs.forEach(input => input.disabled = false);
     editBtn.style.display = "none";
     confirmBtn.style.display = "block";
   });
 
-  // Delete (show modal)
-  deleteBtn.addEventListener("click", () => {
-    deleteModal.style.display = "flex";
-  });
+  // DELETE
+  deleteBtn.addEventListener("click", () => { deleteModal.style.display = "flex"; });
+  cancelDeleteBtn.addEventListener("click", () => { deleteModal.style.display = "none"; });
 
-  // Cancel delete
-  cancelDeleteBtn.addEventListener("click", () => {
-    deleteModal.style.display = "none";
-  });
-
-  // Confirm delete
   confirmDeleteBtn.addEventListener("click", async () => {
     deleteModal.style.display = "none";
     if (!lastID) return;
@@ -119,7 +120,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (err) { console.error(err); alert("Failed to delete info."); }
   });
 
-  // Download QR
+  // DOWNLOAD QR
   downloadBtn.addEventListener("click", () => {
     const qrCanvas = qrcodeDiv.querySelector("canvas");
     if (!qrCanvas) { alert("Generate QR first!"); return; }
@@ -131,4 +132,49 @@ document.addEventListener("DOMContentLoaded", async () => {
     link.click();
     document.body.removeChild(link);
   });
+
+  // PROFILE PANEL TOGGLE
+  profilePanel.style.left = "-260px"; // hidden initially
+
+  profileBtn.addEventListener("click", () => {
+    if (profilePanel.style.left === "0px") {
+      profilePanel.style.left = "-260px";
+      profileBtn.style.left = "10px";
+    } else {
+      profilePanel.style.left = "0px";
+      profileBtn.style.left = "260px"; // move with panel
+    }
+  });
+
+  // DARK/LIGHT MODE TOGGLE
+  if (localStorage.getItem("darkMode") === "enabled") {
+    document.body.classList.add("dark-mode");
+    darkModeToggle.checked = true;
+  }
+
+  function animateIcon(icon) {
+    icon.classList.add("rotate-icon");
+    setTimeout(() => icon.classList.remove("rotate-icon"), 500);
+  }
+
+  darkModeToggle.addEventListener("change", () => {
+    if (darkModeToggle.checked) {
+      document.body.classList.add("dark-mode");
+      localStorage.setItem("darkMode", "enabled");
+      animateIcon(moonIcon);
+    } else {
+      document.body.classList.remove("dark-mode");
+      localStorage.setItem("darkMode", "disabled");
+      animateIcon(sunIcon);
+    }
+  });
+
+  // CLICK OUTSIDE PANEL TO CLOSE
+  document.addEventListener("click", (e) => {
+    if (!profilePanel.contains(e.target) && !profileBtn.contains(e.target)) {
+      profilePanel.style.left = "-260px";
+      profileBtn.style.left = "10px";
+    }
+  });
+
 });

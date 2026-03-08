@@ -3,35 +3,45 @@ document.addEventListener("DOMContentLoaded", () => {
     const generateBtn = document.getElementById("generateBtn");
     const displayDiv = document.getElementById("displayInfo");
   
-    console.log("Firebase db object:", firebase, firebase.firestore());
-  
+    // Button click: generate QR immediately
     generateBtn.addEventListener("click", () => {
   
-      console.log("Generate button clicked");
+      // Get form values (or default)
+      const name = document.getElementById("name").value.trim() || "No Name";
+      const age = document.getElementById("age").value.trim() || "N/A";
+      const blood = document.getElementById("blood").value.trim() || "N/A";
+      const allergies = document.getElementById("allergies").value.trim() || "N/A";
+      const doctor = document.getElementById("doctor").value.trim() || "N/A";
+      const notes = document.getElementById("notes").value.trim() || "None";
   
-      const name = document.getElementById("name").value.trim();
-      const age = document.getElementById("age").value.trim();
-      const blood = document.getElementById("blood").value.trim();
-      const allergies = document.getElementById("allergies").value.trim();
-      const doctor = document.getElementById("doctor").value.trim();
-      const notes = document.getElementById("notes").value.trim();
+      // Step 1: Generate QR code immediately
+      const tempURL = `https://hannahhaitham.github.io/medical-qr/index.html?name=${encodeURIComponent(name)}&age=${encodeURIComponent(age)}`;
+      const qrcodeDiv = document.getElementById("qrcode");
+      qrcodeDiv.innerHTML = ""; // clear previous QR
+      new QRCode(qrcodeDiv, {
+        text: tempURL,
+        width: 200,
+        height: 200,
+        colorDark: "#d6336c",
+        colorLight: "#fff0f6",
+        correctLevel: QRCode.CorrectLevel.H
+      });
   
+      console.log("Temporary QR code generated:", tempURL);
+  
+      // Step 2: Save to Firebase in the background
       const profileData = { name, age, blood, allergies, doctor, notes };
   
-      // Save profile to Firebase
       firebase.firestore().collection("medicalProfiles").add(profileData)
         .then((docRef) => {
   
-          console.log("Document written with ID:", docRef.id);
+          console.log("Firebase document saved with ID:", docRef.id);
   
-          const id = docRef.id;
-          const url = `https://hannahhaitham.github.io/medical-qr/index.html?id=${id}`;
-  
-          // Generate QR code
-          const qrcodeDiv = document.getElementById("qrcode");
+          // Step 3: Update QR to point to Firebase ID
+          const finalURL = `https://hannahhaitham.github.io/medical-qr/index.html?id=${docRef.id}`;
           qrcodeDiv.innerHTML = "";
           new QRCode(qrcodeDiv, {
-            text: url,
+            text: finalURL,
             width: 200,
             height: 200,
             colorDark: "#d6336c",
@@ -39,19 +49,19 @@ document.addEventListener("DOMContentLoaded", () => {
             correctLevel: QRCode.CorrectLevel.H
           });
   
-          console.log("QR code generated for URL:", url);
+          console.log("Final QR code updated with Firebase ID:", finalURL);
   
         })
         .catch((error) => {
-          console.error("Error saving document:", error);
-          alert("Error saving medical info. Check console.");
+          console.error("Error saving to Firebase:", error);
+          alert("Failed to save to Firebase. Check console.");
         });
   
     });
   
   });
   
-  // ----- Fetch medical info when visiting ?id=xxxx -----
+  // Step 4: Fetch and display medical info if URL has ?id=XXXX
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
   

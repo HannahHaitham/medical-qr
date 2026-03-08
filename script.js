@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const downloadBtn = document.getElementById("downloadBtn");
   const qrcodeDiv = document.getElementById("qrcode");
 
-  downloadBtn.style.display = "none";
+  downloadBtn.style.display = "none"; // hide download initially
 
   generateBtn.addEventListener("click", async () => {
     const name = document.getElementById("name").value.trim() || "No Name";
@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const notes = document.getElementById("notes").value.trim() || "None";
 
     try {
-      // Save to Firestore
+      // Save to Firebase
       const docRef = await addDoc(collection(db, "medicalProfiles"), {
         name, age, blood, allergies, doctor, notes
       });
@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const id = docRef.id;
       qrcodeDiv.innerHTML = "";
 
-      // Use absolute URL to GitHub Pages
+      // Fixed URL for your GitHub Pages repo
       const url = `https://hannahhaitham.github.io/medical-qr/medical.html?id=${id}`;
 
       // Generate QR code
@@ -53,6 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
         correctLevel: QRCode.CorrectLevel.H
       });
 
+      // Show download button, hide generate
       generateBtn.style.display = "none";
       downloadBtn.style.display = "block";
 
@@ -62,6 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // Download QR code as PNG
   downloadBtn.addEventListener("click", () => {
     const qrCanvas = qrcodeDiv.querySelector("canvas");
     if (!qrCanvas) {

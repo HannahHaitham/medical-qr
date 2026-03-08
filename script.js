@@ -48,5 +48,29 @@ if (displayDiv) {
         console.error(err);
         displayDiv.innerHTML = "<p>Error loading info.</p>";
       });
-  }
+    }
+}
+
+// -----------------------
+// Download QR Code Feature
+// -----------------------
+const downloadBtn = document.getElementById("downloadBtn");
+
+if (downloadBtn) {
+  downloadBtn.addEventListener("click", () => {
+    const qrCanvas = document.querySelector("#qrcode canvas");
+    if (!qrCanvas) {
+      alert("Please generate a QR code first!");
+      return;
+    }
+
+    const imageURL = qrCanvas.toDataURL("image/png");
+
+    const link = document.createElement("a");
+    link.href = imageURL;
+    link.download = "medical-qr.png";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  });
 }

@@ -6,13 +6,36 @@
   <title>Medical Info</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script type="module" src="script.js"></script>
 </head>
 <body>
 
-  <!-- Profile Panel -->
-  <div id="profilePanel">
-    <h3>Profile Settings</h3>
+   <!-- PROFILE PANEL -->
+   <div id="profilePanel">
+    <h3 id="profilePanelTitle">Profile Settings</h3>
+
+    <div class="language-container">
+      <label for="languageSelect">Language:</label>
+      <select id="languageSelect">
+        <option value="en">English</option>
+        <option value="es">Español</option>
+        <option value="fr">Français</option>
+        <option value="ar">العربية</option>
+        <option value="de">Deutsch</option>
+      </select>
+    </div>
+
     <div class="toggle-container">
+      <!-- Moon icon visible in light mode -->
+      <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#555" width="24" height="24">
+        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+      </svg>
+      <!-- Toggle switch -->
+      <label class="switch">
+        <input type="checkbox" id="darkModeToggle">
+        <span class="slider"></span>
+      </label>
+      <!-- Sun icon hidden in light mode -->
       <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#f5d547" width="24" height="24">
         <circle cx="12" cy="12" r="5"/>
         <g stroke="#f5d547" stroke-width="2">
@@ -26,17 +49,9 @@
           <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
         </g>
       </svg>
-
-      <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#555" width="24" height="24">
-        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
-      </svg>
-
-      <label class="switch">
-        <input type="checkbox" id="darkModeToggle">
-        <span class="slider"></span>
-      </label>
     </div>
   </div>
+
 
   <!-- Profile Button -->
   <button class="profile-btn">

@@ -10,9 +10,21 @@
 </head>
 <body>
 
-  <!-- PROFILE PANEL -->
-  <div id="profilePanel">
-    <h3>Profile Settings</h3>
+   <!-- PROFILE PANEL -->
+   <div id="profilePanel">
+    <h3 id="profilePanelTitle">Profile Settings</h3>
+
+    <div class="language-container">
+      <label for="languageSelect">Language:</label>
+      <select id="languageSelect">
+        <option value="en">English</option>
+        <option value="es">Español</option>
+        <option value="fr">Français</option>
+        <option value="ar">العربية</option>
+        <option value="de">Deutsch</option>
+      </select>
+    </div>
+
     <div class="toggle-container">
       <!-- Moon icon visible in light mode -->
       <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#555" width="24" height="24">
@@ -41,7 +53,7 @@
   </div>
 
   <!-- Profile Button -->
-  <button class="profile-btn">
+  <button class="profile-btn" id="profileBtn">
     <img src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png" class="profile-pic" alt="Profile">
   </button>
 
@@ -66,23 +78,23 @@
       </button>
     </div>
 
-    <h2>Medical Information QR Code</h2>
+    <h2 id="formTitle">Medical Information QR Code</h2>
 
     <form id="medicalForm">
-      <label for="name">Full Name:</label>
+      <label for="name" id="labelName">Full Name:</label>
       <input type="text" id="name" placeholder="Full Name">
 
-      <label for="age">Age:</label>
+      <label for="age" id="labelAge">Age:</label>
       <input type="number" id="age" placeholder="Age">
 
-      <label for="allergiesYesNo">Allergies:</label>
+      <label for="allergiesYesNo" id="labelAllergies">Allergies:</label>
       <select id="allergiesYesNo">
         <option>No</option>
         <option>Yes</option>
       </select>
       <textarea id="allergies" placeholder="Specify allergies"></textarea>
 
-      <label for="blood">Blood Type:</label>
+      <label for="blood" id="labelBlood">Blood Type:</label>
       <select id="blood">
         <option value="">Select Blood Type</option>
         <option>A+</option>
@@ -95,7 +107,7 @@
         <option>O-</option>
       </select>
 
-      <label for="diabetes">Diabetes:</label>
+      <label for="diabetes" id="labelDiabetes">Diabetes:</label>
       <select id="diabetes">
         <option>No</option>
         <option>Yes</option>
@@ -106,41 +118,41 @@
         <option>Gestational</option>
       </select>
 
-      <label for="highBP">High Blood Pressure:</label>
+      <label for="highBP" id="labelHighBP">High Blood Pressure:</label>
       <select id="highBP">
         <option>No</option>
         <option>Yes</option>
       </select>
 
-      <label for="lowBP">Low Blood Pressure:</label>
+      <label for="lowBP" id="labelLowBP">Low Blood Pressure:</label>
       <select id="lowBP">
         <option>No</option>
         <option>Yes</option>
       </select>
 
-      <label for="strokeHistory">History of Strokes:</label>
+      <label for="strokeHistory" id="labelStroke">History of Strokes:</label>
       <select id="strokeHistory">
         <option>No</option>
         <option>Self</option>
         <option>Family Member</option>
       </select>
 
-      <label for="DNR">DNR:</label>
+      <label for="DNR" id="labelDNR">DNR:</label>
       <select id="DNR">
         <option>No</option>
         <option>Yes</option>
       </select>
 
-      <label for="organDonor">Organ Donor:</label>
+      <label for="organDonor" id="labelOrganDonor">Organ Donor:</label>
       <select id="organDonor">
         <option>No</option>
         <option>Yes</option>
       </select>
 
-      <label for="medicine">Medicine Taken:</label>
+      <label for="medicine" id="labelMedicine">Medicine Taken:</label>
       <textarea id="medicine" placeholder="Medicines you take"></textarea>
 
-      <label for="asthma">Asthma:</label>
+      <label for="asthma" id="labelAsthma">Asthma:</label>
       <select id="asthma">
         <option>No</option>
         <option>Mild</option>
@@ -148,14 +160,14 @@
         <option>Severe</option>
       </select>
 
-      <label for="smoke">Do you smoke?</label>
+      <label for="smoke" id="labelSmoke">Do you smoke?</label>
       <select id="smoke">
         <option>No</option>
         <option>Yes</option>
       </select>
       <input type="text" id="smokeFrequency" placeholder="How many packs/day" style="display:none;">
 
-      <label for="epilepsy">Epilepsy:</label>
+      <label for="epilepsy" id="labelEpilepsy">Epilepsy:</label>
       <select id="epilepsy">
         <option>No</option>
         <option>Yes</option>
@@ -166,10 +178,10 @@
         <option>Unknown</option>
       </select>
 
-      <label for="notes">Notes:</label>
+      <label for="notes" id="labelNotes">Notes:</label>
       <textarea id="notes" placeholder="Other notes"></textarea>
 
-      <label for="emergencyContact">Emergency Contact:</label>
+      <label for="emergencyContact" id="labelEmergency">Emergency Contact:</label>
       <input type="text" id="emergencyContact" placeholder="Emergency contact number">
     </form>
 
@@ -181,7 +193,7 @@
     <!-- Delete Confirmation Modal -->
     <div id="deleteModal" class="modal">
       <div class="modal-content">
-        <p>Are you sure you want to delete your info?</p>
+        <p id="deleteModalText">Are you sure you want to delete your info?</p>
         <div class="modal-buttons">
           <button id="cancelDelete">Cancel</button>
           <button id="confirmDelete">Delete</button>

@@ -355,3 +355,36 @@ input:checked + .slider:before {
 input:checked + .slider {
   background-color: #1da1f2;
 }
+
+.language-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.language-container select {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid #c0e6ff;
+  border-radius: 10px;
+  font-size: 14px;
+  background-color: white;
+  color: #1da1f2;
+  transition: 0.3s;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%231da1f2" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px 16px;
+}
+
+body.dark-mode .language-container select {
+  background-color: #2a2a2a;
+  color: #a0cfff;
+  border-color: #42b8ff;
+}

@@ -1,3 +1,5 @@
+
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
 import { getFirestore, collection, addDoc, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
@@ -212,6 +214,308 @@ document.addEventListener("DOMContentLoaded", async () => {
       profileBtn.style.left = "10px";
     }
   });
+
+  const languageSelect = document.getElementById("languageSelect");
+
+// Load saved language
+if(localStorage.getItem("language")){
+  languageSelect.value = localStorage.getItem("language");
+  setLanguage(languageSelect.value, false);
+}
+
+// Smooth transition when changing language
+languageSelect.addEventListener("change", () => {
+  const lang = languageSelect.value;
+  localStorage.setItem("language", lang);
+  setLanguage(lang, true);
+});
+
+function setLanguage(lang, smooth){
+  const body = document.body;
+  if(smooth){
+    body.style.transition = "opacity 0.4s";
+    body.style.opacity = "0";
+    setTimeout(() => {
+      updateTextForLanguage(lang);
+      body.style.opacity = "1";
+    }, 400);
+  } else {
+    updateTextForLanguage(lang);
+  }
+}
+
+
+
+function updateTextForLanguage(lang){
+  const translations = {
+    en: {
+      profilePanelTitle: "Profile Settings",
+      languageLabel: "Language:",
+      formTitle: "Medical Information QR Code",
+      labelName: "Full Name:",
+      labelAge: "Age:",
+      labelAllergies: "Allergies:",
+      labelBlood: "Blood Type:",
+      labelDiabetes: "Diabetes:",
+      diabetesTypeOptions: ["Type 1", "Type 2", "Gestational"],
+      labelHighBP: "High Blood Pressure:",
+      labelLowBP: "Low Blood Pressure:",
+      labelStroke: "History of Strokes:",
+      labelDNR: "DNR:",
+      labelOrganDonor: "Organ Donor:",
+      labelMedicine: "Medicine Taken:",
+      labelAsthma: "Asthma:",
+      asthmaOptions: ["No", "Mild", "Moderate", "Severe"],
+      labelSmoke: "Do you smoke?",
+      smokeFrequencyPlaceholder: "How many packs/day",
+      labelEpilepsy: "Epilepsy:",
+      epilepsyTypeOptions: ["Focal", "Generalized", "Unknown"],
+      labelNotes: "Notes:",
+      labelEmergency: "Emergency Contact:",
+      confirmBtn: "Confirm Info",
+      deleteModalText: "Are you sure you want to delete your info?",
+      cancelDelete: "Cancel",
+      confirmDelete: "Delete",
+      selectYes: "Yes",
+      selectNo: "No",
+      selectSelf: "Self",
+      selectFamily: "Family Member"
+    },
+    fr: {
+      profilePanelTitle: "Paramètres du profil",
+      languageLabel: "Langue :",
+      formTitle: "Code QR d'information médicale",
+      labelName: "Nom complet :",
+      labelAge: "Âge :",
+      labelAllergies: "Allergies :",
+      labelBlood: "Groupe sanguin :",
+      labelDiabetes: "Diabète :",
+      diabetesTypeOptions: ["Type 1", "Type 2", "Gestationnel"],
+      labelHighBP: "Hypertension :",
+      labelLowBP: "Hypotension :",
+      labelStroke: "Antécédents d'accidents vasculaires cérébraux :",
+      labelDNR: "DNR :",
+      labelOrganDonor: "Donneur d'organes :",
+      labelMedicine: "Médicaments pris :",
+      labelAsthma: "Asthme :",
+      asthmaOptions: ["Non", "Léger", "Modéré", "Sévère"],
+      labelSmoke: "Fumez-vous ?",
+      smokeFrequencyPlaceholder: "Combien de paquets/jour",
+      labelEpilepsy: "Épilepsie :",
+      epilepsyTypeOptions: ["Focale", "Généralisée", "Inconnue"],
+      labelNotes: "Remarques :",
+      labelEmergency: "Contact d'urgence :",
+      confirmBtn: "Confirmer les informations",
+      deleteModalText: "Êtes-vous sûr de vouloir supprimer vos informations ?",
+      cancelDelete: "Annuler",
+      confirmDelete: "Supprimer",
+      selectYes: "Oui",
+      selectNo: "Non",
+      selectSelf: "Moi",
+      selectFamily: "Membre de la famille"
+    },
+    es: {
+      profilePanelTitle: "Configuración del perfil",
+      languageLabel: "Idioma:",
+      formTitle: "Código QR de información médica",
+      labelName: "Nombre completo:",
+      labelAge: "Edad:",
+      labelAllergies: "Alergias:",
+      labelBlood: "Tipo de sangre:",
+      labelDiabetes: "Diabetes:",
+      diabetesTypeOptions: ["Tipo 1", "Tipo 2", "Gestacional"],
+      labelHighBP: "Presión alta:",
+      labelLowBP: "Presión baja:",
+      labelStroke: "Antecedentes de derrames:",
+      labelDNR: "DNR:",
+      labelOrganDonor: "Donante de órganos:",
+      labelMedicine: "Medicamentos que toma:",
+      labelAsthma: "Asma:",
+      asthmaOptions: ["No", "Leve", "Moderado", "Severo"],
+      labelSmoke: "¿Fumas?",
+      smokeFrequencyPlaceholder: "Cuántos paquetes/día",
+      labelEpilepsy: "Epilepsia:",
+      epilepsyTypeOptions: ["Focal", "Generalizada", "Desconocida"],
+      labelNotes: "Notas:",
+      labelEmergency: "Contacto de emergencia:",
+      confirmBtn: "Confirmar información",
+      deleteModalText: "¿Está seguro de que desea eliminar su información?",
+      cancelDelete: "Cancelar",
+      confirmDelete: "Eliminar",
+      selectYes: "Sí",
+      selectNo: "No",
+      selectSelf: "Yo",
+      selectFamily: "Familiar"
+    },
+    ar: {
+      profilePanelTitle: "إعدادات الملف الشخصي",
+      languageLabel: "اللغة:",
+      formTitle: "رمز الاستجابة السريعة للمعلومات الطبية",
+      labelName: "الاسم الكامل:",
+      labelAge: "العمر:",
+      labelAllergies: "الحساسية:",
+      labelBlood: "فصيلة الدم:",
+      labelDiabetes: "السكري:",
+      diabetesTypeOptions: ["النوع 1", "النوع 2", "سكري الحمل"],
+      labelHighBP: "ارتفاع ضغط الدم:",
+      labelLowBP: "انخفاض ضغط الدم:",
+      labelStroke: "تاريخ السكتات الدماغية:",
+      labelDNR: "عدم الإنعاش:",
+      labelOrganDonor: "متبرع بالأعضاء:",
+      labelMedicine: "الأدوية التي تتناولها:",
+      labelAsthma: "الربو:",
+      asthmaOptions: ["لا", "خفيف", "متوسط", "شديد"],
+      labelSmoke: "هل تدخن؟",
+      smokeFrequencyPlaceholder: "كم عدد العبوات/اليوم",
+      labelEpilepsy: "الصرع:",
+      epilepsyTypeOptions: ["بؤري", "معمم", "غير معروف"],
+      labelNotes: "ملاحظات:",
+      labelEmergency: "جهة اتصال الطوارئ:",
+      confirmBtn: "تأكيد المعلومات",
+      deleteModalText: "هل أنت متأكد أنك تريد حذف معلوماتك؟",
+      cancelDelete: "إلغاء",
+      confirmDelete: "حذف",
+      selectYes: "نعم",
+      selectNo: "لا",
+      selectSelf: "أنا",
+      selectFamily: "أحد أفراد العائلة"
+    },
+    de: {
+      profilePanelTitle: "Profileinstellungen",
+      languageLabel: "Sprache:",
+      formTitle: "QR-Code für medizinische Informationen",
+      labelName: "Vollständiger Name:",
+      labelAge: "Alter:",
+      labelAllergies: "Allergien:",
+      labelBlood: "Blutgruppe:",
+      labelDiabetes: "Diabetes:",
+      diabetesTypeOptions: ["Typ 1", "Typ 2", "Gestationsdiabetes"],
+      labelHighBP: "Bluthochdruck:",
+      labelLowBP: "Niedriger Blutdruck:",
+      labelStroke: "Schlaganfallgeschichte:",
+      labelDNR: "DNR:",
+      labelOrganDonor: "Organspender:",
+      labelMedicine: "Eingenommene Medikamente:",
+      labelAsthma: "Asthma:",
+      asthmaOptions: ["Nein", "Mild", "Mäßig", "Schwer"],
+      labelSmoke: "Rauchen Sie?",
+      smokeFrequencyPlaceholder: "Wie viele Packungen/Tag",
+      labelEpilepsy: "Epilepsie:",
+      epilepsyTypeOptions: ["Fokal", "Generalisiert", "Unbekannt"],
+      labelNotes: "Notizen:",
+      labelEmergency: "Notfallkontakt:",
+      confirmBtn: "Informationen bestätigen",
+      deleteModalText: "Sind Sie sicher, dass Sie Ihre Informationen löschen möchten?",
+      cancelDelete: "Abbrechen",
+      confirmDelete: "Löschen",
+      selectYes: "Ja",
+      selectNo: "Nein",
+      selectSelf: "Selbst",
+      selectFamily: "Familienmitglied"
+    }
+  };
+
+
+  // --- LANGUAGE SWITCHING ---
+// Assumes you have the `translations` object already defined
+const languageSelect = document.getElementById("languageSelect");
+
+// Function to apply a language
+function applyLanguage(lang) {
+  const t = translations[lang];
+
+  if (!t) return;
+
+  // PROFILE PANEL
+  document.querySelector("#profilePanel h3").textContent = t.profilePanelTitle;
+  document.querySelector("#profilePanel label[for='languageSelect']").textContent = t.languageLabel;
+
+  // FORM TITLE
+  document.querySelector("h2").textContent = t.formTitle;
+
+  // LABELS
+  document.querySelector("label[for='name']").textContent = t.labelName;
+  document.querySelector("label[for='age']").textContent = t.labelAge;
+  document.querySelector("label[for='allergiesYesNo']").textContent = t.labelAllergies;
+  document.querySelector("label[for='blood']").textContent = t.labelBlood;
+  document.querySelector("label[for='diabetes']").textContent = t.labelDiabetes;
+  document.querySelector("label[for='highBP']").textContent = t.labelHighBP;
+  document.querySelector("label[for='lowBP']").textContent = t.labelLowBP;
+  document.querySelector("label[for='strokeHistory']").textContent = t.labelStroke;
+  document.querySelector("label[for='DNR']").textContent = t.labelDNR;
+  document.querySelector("label[for='organDonor']").textContent = t.labelOrganDonor;
+  document.querySelector("label[for='medicine']").textContent = t.labelMedicine;
+  document.querySelector("label[for='asthma']").textContent = t.labelAsthma;
+  document.querySelector("label[for='smoke']").textContent = t.labelSmoke;
+  document.querySelector("label[for='epilepsy']").textContent = t.labelEpilepsy;
+  document.querySelector("label[for='notes']").textContent = t.labelNotes;
+  document.querySelector("label[for='emergencyContact']").textContent = t.labelEmergency;
+
+  // PLACEHOLDERS
+  document.getElementById("name").placeholder = t.labelName;
+  document.getElementById("age").placeholder = t.labelAge;
+  document.getElementById("allergies").placeholder = t.labelAllergies;
+  document.getElementById("medicine").placeholder = t.labelMedicine;
+  document.getElementById("notes").placeholder = t.labelNotes;
+  document.getElementById("emergencyContact").placeholder = t.labelEmergency;
+  document.getElementById("smokeFrequency").placeholder = t.smokeFrequencyPlaceholder;
+
+  // BUTTONS
+  document.getElementById("confirmBtn").textContent = t.confirmBtn;
+  document.getElementById("cancelDelete").textContent = t.cancelDelete;
+  document.getElementById("confirmDelete").textContent = t.confirmDelete;
+
+  // SELECT OPTIONS
+  function updateSelectOptions(selectId, options) {
+    const select = document.getElementById(selectId);
+    if (!select) return;
+
+    // Save current value if exists
+    const currentVal = select.value;
+
+    // Clear old options
+    select.innerHTML = "";
+
+    // Add new options
+    options.forEach(opt => {
+      const option = document.createElement("option");
+      option.value = opt;
+      option.textContent = opt;
+      select.appendChild(option);
+    });
+
+    // Restore value if it still exists
+    if (options.includes(currentVal)) select.value = currentVal;
+  }
+
+  updateSelectOptions("diabetesType", t.diabetesTypeOptions);
+  updateSelectOptions("epilepsyType", t.epilepsyTypeOptions);
+  updateSelectOptions("asthma", t.asthmaOptions);
+
+  // Yes/No / Self/Family
+  updateSelectOptions("allergiesYesNo", [t.selectNo, t.selectYes]);
+  updateSelectOptions("diabetes", [t.selectNo, t.selectYes]);
+  updateSelectOptions("highBP", [t.selectNo, t.selectYes]);
+  updateSelectOptions("lowBP", [t.selectNo, t.selectYes]);
+  updateSelectOptions("strokeHistory", [t.selectNo, t.selectSelf, t.selectFamily]);
+  updateSelectOptions("DNR", [t.selectNo, t.selectYes]);
+  updateSelectOptions("organDonor", [t.selectNo, t.selectYes]);
+  updateSelectOptions("smoke", [t.selectNo, t.selectYes]);
+  updateSelectOptions("epilepsy", [t.selectNo, t.selectYes]);
+}
+
+// --- EVENT LISTENER ---
+languageSelect.addEventListener("change", () => {
+  const selectedLang = languageSelect.value;
+  applyLanguage(selectedLang);
+  localStorage.setItem("preferredLanguage", selectedLang);
+});
+
+// --- INIT LANGUAGE ---
+const savedLang = localStorage.getItem("preferredLanguage") || "en";
+languageSelect.value = savedLang;
+applyLanguage(savedLang);
+}
 
   // --- DARK/LIGHT MODE ---
   function rotateIcon(icon){

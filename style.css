@@ -83,7 +83,7 @@ body.dark-mode form {
 
 /* FORM FIELDS (INPUT, TEXTAREA, SELECT) */
 input, textarea, select {
-  display: block;
+  box-sizing: border-box; /* makes width include padding and border */
   width: 100%;
   margin: 12px 0;
   padding: 10px 12px;
@@ -91,14 +91,18 @@ input, textarea, select {
   border-radius: 10px;
   font-size: 14px;
   transition: 0.3s;
-  background-color: white;
-  color: #1da1f2;
 }
 
-input:focus, textarea:focus, select:focus {
-  border-color: #1da1f2;
-  outline: none;
-  box-shadow: 0 0 5px rgba(29,162,242,0.5);
+select {
+  appearance: none;      /* remove default arrow styling */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: white;
+  color: #1da1f2;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%231da1f2" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px 16px;
 }
 
 body.dark-mode input,

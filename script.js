@@ -17,7 +17,7 @@ const db = getFirestore(app);
 
 document.addEventListener("DOMContentLoaded", async () => {
 
-  // Elements
+  // ELEMENTS
   const confirmBtn = document.getElementById("confirmBtn");
   const downloadBtn = document.getElementById("downloadBtn");
   const editBtn = document.getElementById("editBtn");
@@ -36,21 +36,35 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   let lastID = localStorage.getItem("lastMedicalID");
 
-  // Allergies conditional textarea
-  const allergiesSelect = document.getElementById("allergiesYesNo");
-  const allergiesText = document.getElementById("allergies");
-  allergiesText.style.display = allergiesSelect.value === "Yes" ? "block" : "none";
+  // --- CONDITIONAL FIELDS ---
+  const conditionalFields = {
+    allergiesYesNo: "allergies",
+    diabetes: "diabetesType",
+    epilepsy: "epilepsyType",
+    strokeHistory: "strokeType",
+    asthma: "asthmaType",
+    smoke: "smokeFreq",
+    highBP: "highBPType",
+    lowBP: "lowBPType"
+  };
 
-  allergiesSelect.addEventListener("change", () => {
-    if (allergiesSelect.value === "Yes") {
-      allergiesText.style.display = "block";
-    } else {
-      allergiesText.style.display = "none";
-      allergiesText.value = "";
-    }
+  Object.keys(conditionalFields).forEach(parentId => {
+    const parent = document.getElementById(parentId);
+    const child = document.getElementById(conditionalFields[parentId]);
+    if (!parent || !child) return;
+
+    child.style.display = parent.value === "Yes" ? "block" : "none";
+
+    parent.addEventListener("change", () => {
+      if (parent.value === "Yes") child.style.display = "block";
+      else {
+        child.style.display = "none";
+        child.value = "";
+      }
+    });
   });
 
-  // Load saved info
+  // --- LOAD EXISTING DATA ---
   if (lastID) {
     try {
       const docSnap = await getDoc(doc(db, "medicalProfiles", lastID));
@@ -59,6 +73,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         for (const key in data) {
           if (document.getElementById(key)) {
             document.getElementById(key).value = data[key];
+            // show conditional child fields if needed
+            if (Object.values(conditionalFields).includes(key)) {
+              document.getElementById(key).style.display = "block";
+            }
           }
         }
         form.querySelectorAll("input, textarea, select").forEach(el => el.disabled = true);
@@ -68,18 +86,27 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const url = `https://hannahhaitham.github.io/medical-qr/medical.html?id=${lastID}`;
         qrcodeDiv.innerHTML = "";
-        new QRCode(qrcodeDiv, { text: url, width: 200, height: 200, colorDark: "#1da1f2", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
+        new QRCode(qrcodeDiv, {
+          text: url,
+          width: 200,
+          height: 200,
+          colorDark: "#1da1f2",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.H
+        });
         downloadBtn.style.display = "block";
       }
     } catch (err) { console.error(err); }
   }
 
-  // Confirm / Generate
+  // --- CONFIRM / SAVE DATA ---
   confirmBtn.addEventListener("click", async () => {
     const fields = [
-      "name", "age", "allergies", "blood", "diabetes", "highBP", "lowBP",
-      "strokeHistory", "DNR", "organDonor", "medicine", "asthma", "smoke",
-      "epilepsy", "notes", "emergencyContact"
+      "name", "age", "allergies", "allergiesYesNo",
+      "blood", "diabetes", "diabetesType", "highBP", "highBPType",
+      "lowBP", "lowBPType", "strokeHistory", "strokeType", "DNR",
+      "organDonor", "medicine", "asthma", "asthmaType", "smoke", "smokeFreq",
+      "epilepsy", "epilepsyType", "notes", "emergencyContact"
     ];
 
     const dataToSave = {};
@@ -108,19 +135,26 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       const url = `https://hannahhaitham.github.io/medical-qr/medical.html?id=${lastID}`;
       qrcodeDiv.innerHTML = "";
-      new QRCode(qrcodeDiv, { text: url, width: 200, height: 200, colorDark: "#1da1f2", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
+      new QRCode(qrcodeDiv, {
+        text: url,
+        width: 200,
+        height: 200,
+        colorDark: "#1da1f2",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
       downloadBtn.style.display = "block";
     } catch (err) { console.error(err); alert("Failed to save info."); }
   });
 
-  // Edit
+  // --- EDIT ---
   editBtn.addEventListener("click", () => {
     form.querySelectorAll("input, textarea, select").forEach(el => el.disabled = false);
     editBtn.style.display = "none";
     confirmBtn.style.display = "block";
   });
 
-  // Delete
+  // --- DELETE ---
   deleteBtn.addEventListener("click", () => { deleteModal.style.display = "flex"; });
   cancelDeleteBtn.addEventListener("click", () => { deleteModal.style.display = "none"; });
 
@@ -142,7 +176,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (err) { console.error(err); alert("Failed to delete info."); }
   });
 
-  // Download QR
+  // --- DOWNLOAD QR ---
   downloadBtn.addEventListener("click", () => {
     const qrCanvas = qrcodeDiv.querySelector("canvas");
     if (!qrCanvas) { alert("Generate QR first!"); return; }
@@ -155,8 +189,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.body.removeChild(link);
   });
 
-  // PROFILE PANEL TOGGLE
-  profileBtn.addEventListener("click", () => {
+  // --- PROFILE PANEL TOGGLE ---
+  function isMobile() { return window.innerWidth <= 768; }
+
+  profileBtn.addEventListener("click", (e) => {
+    e.stopPropagation(); // stop document listener from firing
     if(profilePanel.style.left === "0px"){
       profilePanel.style.left = "-260px";
       profileBtn.style.left = "10px";
@@ -165,14 +202,23 @@ document.addEventListener("DOMContentLoaded", async () => {
       profileBtn.style.left = "260px";
     }
   });
+  
+  document.addEventListener("click", (e) => {
+    // only close if panel is open AND click is outside
+    if(profilePanel.style.left === "0px" &&
+       !profilePanel.contains(e.target) &&
+       !profileBtn.contains(e.target)){
+      profilePanel.style.left = "-260px";
+      profileBtn.style.left = "10px";
+    }
+  });
 
-  // DARK/LIGHT MODE
+  // --- DARK/LIGHT MODE ---
   function rotateIcon(icon){
     icon.classList.add("rotate-icon");
     setTimeout(()=> icon.classList.remove("rotate-icon"), 500);
   }
 
-  // INIT ICON STATE
   if(localStorage.getItem("darkMode")==="enabled"){
     document.body.classList.add("dark-mode");
     darkModeToggle.checked = true;
@@ -199,13 +245,4 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  // CLOSE PANEL ON OUTSIDE CLICK
-  document.addEventListener("click", (e)=>{
-    if(!profilePanel.contains(e.target) && !profileBtn.contains(e.target)){
-      profilePanel.style.left = "-260px";
-      profileBtn.style.left = "10px";
-    }
-  });
-
 });
-

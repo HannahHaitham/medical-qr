@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
 import { getFirestore, collection, addDoc, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyC1ZgCCR-MakYRbA6Vw9I7QYWmITuOLC2M",
   authDomain: "medical-qr-50da9.firebaseapp.com",
@@ -16,13 +17,13 @@ const db = getFirestore(app);
 
 document.addEventListener("DOMContentLoaded", async () => {
 
-  // ELEMENTS
+  // Elements
   const confirmBtn = document.getElementById("confirmBtn");
   const downloadBtn = document.getElementById("downloadBtn");
   const editBtn = document.getElementById("editBtn");
   const deleteBtn = document.getElementById("deleteBtn");
   const qrcodeDiv = document.getElementById("qrcode");
-  const formInputs = document.querySelectorAll("#medicalForm input, #medicalForm textarea");
+  const form = document.getElementById("medicalForm");
   const deleteModal = document.getElementById("deleteModal");
   const confirmDeleteBtn = document.getElementById("confirmDelete");
   const cancelDeleteBtn = document.getElementById("cancelDelete");
@@ -35,20 +36,32 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   let lastID = localStorage.getItem("lastMedicalID");
 
-  // LOAD SAVED INFO
+  // Allergies conditional textarea
+  const allergiesSelect = document.getElementById("allergiesYesNo");
+  const allergiesText = document.getElementById("allergies");
+  allergiesText.style.display = allergiesSelect.value === "Yes" ? "block" : "none";
+
+  allergiesSelect.addEventListener("change", () => {
+    if (allergiesSelect.value === "Yes") {
+      allergiesText.style.display = "block";
+    } else {
+      allergiesText.style.display = "none";
+      allergiesText.value = "";
+    }
+  });
+
+  // Load saved info
   if (lastID) {
     try {
       const docSnap = await getDoc(doc(db, "medicalProfiles", lastID));
       if (docSnap.exists()) {
         const data = docSnap.data();
-        document.getElementById("name").value = data.name;
-        document.getElementById("age").value = data.age;
-        document.getElementById("blood").value = data.blood;
-        document.getElementById("allergies").value = data.allergies;
-        document.getElementById("doctor").value = data.doctor;
-        document.getElementById("notes").value = data.notes;
-
-        formInputs.forEach(input => input.disabled = true);
+        for (const key in data) {
+          if (document.getElementById(key)) {
+            document.getElementById(key).value = data[key];
+          }
+        }
+        form.querySelectorAll("input, textarea, select").forEach(el => el.disabled = true);
         editBtn.style.display = "flex";
         deleteBtn.style.display = "flex";
         confirmBtn.style.display = "none";
@@ -61,25 +74,34 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (err) { console.error(err); }
   }
 
-  // CONFIRM / GENERATE
+  // Confirm / Generate
   confirmBtn.addEventListener("click", async () => {
-    const name = document.getElementById("name").value.trim() || "No Name";
-    const age = document.getElementById("age").value.trim() || "N/A";
-    const blood = document.getElementById("blood").value.trim() || "N/A";
-    const allergies = document.getElementById("allergies").value.trim() || "N/A";
-    const doctor = document.getElementById("doctor").value.trim() || "N/A";
-    const notes = document.getElementById("notes").value.trim() || "None";
+    const fields = [
+      "name", "age", "allergies", "blood", "diabetes", "highBP", "lowBP",
+      "strokeHistory", "DNR", "organDonor", "medicine", "asthma", "smoke",
+      "epilepsy", "notes", "emergencyContact"
+    ];
+
+    const dataToSave = {};
+    fields.forEach(f => {
+      const el = document.getElementById(f);
+      if (!el) return;
+      const val = el.value.trim();
+      if (val && val !== "No") dataToSave[f] = val;
+    });
+
+    if (!dataToSave.name) dataToSave.name = "No Name"; // always have a name
 
     try {
       if (!lastID) {
-        const docRef = await addDoc(collection(db, "medicalProfiles"), { name, age, blood, allergies, doctor, notes });
+        const docRef = await addDoc(collection(db, "medicalProfiles"), dataToSave);
         lastID = docRef.id;
         localStorage.setItem("lastMedicalID", lastID);
       } else {
-        await setDoc(doc(db, "medicalProfiles", lastID), { name, age, blood, allergies, doctor, notes });
+        await setDoc(doc(db, "medicalProfiles", lastID), dataToSave);
       }
 
-      formInputs.forEach(input => input.disabled = true);
+      form.querySelectorAll("input, textarea, select").forEach(el => el.disabled = true);
       confirmBtn.style.display = "none";
       editBtn.style.display = "flex";
       deleteBtn.style.display = "flex";
@@ -91,14 +113,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (err) { console.error(err); alert("Failed to save info."); }
   });
 
-  // EDIT
+  // Edit
   editBtn.addEventListener("click", () => {
-    formInputs.forEach(input => input.disabled = false);
+    form.querySelectorAll("input, textarea, select").forEach(el => el.disabled = false);
     editBtn.style.display = "none";
     confirmBtn.style.display = "block";
   });
 
-  // DELETE
+  // Delete
   deleteBtn.addEventListener("click", () => { deleteModal.style.display = "flex"; });
   cancelDeleteBtn.addEventListener("click", () => { deleteModal.style.display = "none"; });
 
@@ -107,9 +129,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!lastID) return;
 
     try {
-      await setDoc(doc(db, "medicalProfiles", lastID), { name: "", age: "", blood: "", allergies: "", doctor: "", notes: "" });
-      formInputs.forEach(input => input.value = "");
-      formInputs.forEach(input => input.disabled = false);
+      await setDoc(doc(db, "medicalProfiles", lastID), {});
+      form.querySelectorAll("input, textarea, select").forEach(el => el.value = "");
+      form.querySelectorAll("input, textarea, select").forEach(el => el.disabled = false);
       editBtn.style.display = "none";
       deleteBtn.style.display = "none";
       confirmBtn.style.display = "block";
@@ -120,7 +142,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (err) { console.error(err); alert("Failed to delete info."); }
   });
 
-  // DOWNLOAD QR
+  // Download QR
   downloadBtn.addEventListener("click", () => {
     const qrCanvas = qrcodeDiv.querySelector("canvas");
     if (!qrCanvas) { alert("Generate QR first!"); return; }
@@ -134,47 +156,56 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   // PROFILE PANEL TOGGLE
-  profilePanel.style.left = "-260px"; // hidden initially
-
   profileBtn.addEventListener("click", () => {
-    if (profilePanel.style.left === "0px") {
+    if(profilePanel.style.left === "0px"){
       profilePanel.style.left = "-260px";
       profileBtn.style.left = "10px";
     } else {
       profilePanel.style.left = "0px";
-      profileBtn.style.left = "260px"; // move with panel
+      profileBtn.style.left = "260px";
     }
   });
 
-  // DARK/LIGHT MODE TOGGLE
-  if (localStorage.getItem("darkMode") === "enabled") {
+  // DARK/LIGHT MODE
+  function rotateIcon(icon){
+    icon.classList.add("rotate-icon");
+    setTimeout(()=> icon.classList.remove("rotate-icon"), 500);
+  }
+
+  // INIT ICON STATE
+  if(localStorage.getItem("darkMode")==="enabled"){
     document.body.classList.add("dark-mode");
     darkModeToggle.checked = true;
+    sunIcon.style.display = "block";
+    moonIcon.style.display = "none";
+  } else {
+    sunIcon.style.display = "none";
+    moonIcon.style.display = "block";
   }
 
-  function animateIcon(icon) {
-    icon.classList.add("rotate-icon");
-    setTimeout(() => icon.classList.remove("rotate-icon"), 500);
-  }
-
-  darkModeToggle.addEventListener("change", () => {
-    if (darkModeToggle.checked) {
+  darkModeToggle.addEventListener("change", ()=>{
+    if(darkModeToggle.checked){
       document.body.classList.add("dark-mode");
-      localStorage.setItem("darkMode", "enabled");
-      animateIcon(moonIcon);
+      localStorage.setItem("darkMode","enabled");
+      sunIcon.style.display = "block";
+      moonIcon.style.display = "none";
+      rotateIcon(sunIcon);
     } else {
       document.body.classList.remove("dark-mode");
-      localStorage.setItem("darkMode", "disabled");
-      animateIcon(sunIcon);
+      localStorage.setItem("darkMode","disabled");
+      sunIcon.style.display = "none";
+      moonIcon.style.display = "block";
+      rotateIcon(moonIcon);
     }
   });
 
-  // CLICK OUTSIDE PANEL TO CLOSE
-  document.addEventListener("click", (e) => {
-    if (!profilePanel.contains(e.target) && !profileBtn.contains(e.target)) {
+  // CLOSE PANEL ON OUTSIDE CLICK
+  document.addEventListener("click", (e)=>{
+    if(!profilePanel.contains(e.target) && !profileBtn.contains(e.target)){
       profilePanel.style.left = "-260px";
       profileBtn.style.left = "10px";
     }
   });
 
 });
+

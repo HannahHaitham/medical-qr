@@ -11,12 +11,7 @@
 
   <!-- Profile Panel -->
   <div id="profilePanel">
-    <h3>Profile</h3>
-
-    <button class="profile-btn">
-      <img class="profile-pic" src="profile-placeholder.png" alt="Profile">
-    </button>
-
+    <h3>Profile Settings</h3>
     <div class="toggle-container">
       <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#f5d547" width="24" height="24">
         <circle cx="12" cy="12" r="5"/>
@@ -32,7 +27,7 @@
         </g>
       </svg>
 
-      <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ffffff" width="24" height="24">
+      <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#555" width="24" height="24">
         <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
       </svg>
 
@@ -43,8 +38,13 @@
     </div>
   </div>
 
+  <!-- Profile Button -->
+  <button class="profile-btn">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png" class="profile-pic" alt="Profile">
+  </button>
+
   <div class="container">
-    <h2>Medical Info</h2>
+    <h2>Medical Information</h2>
     <div id="displayInfo"></div>
   </div>
 
@@ -77,25 +77,44 @@
           displayDiv.innerHTML = "<p>No medical info found.</p>";
           return;
         }
+
         const data = docSnap.data();
-        displayDiv.innerHTML = `
-          <div class="info-card">
-            <h3>Medical Information</h3>
-            <p><strong>Name:</strong> ${data.name}</p>
-            <p><strong>Age:</strong> ${data.age}</p>
-            <p><strong>Blood Type:</strong> ${data.blood}</p>
-            <p><strong>Allergies:</strong> ${data.allergies}</p>
-            <p><strong>Doctor:</strong> ${data.doctor}</p>
-            <p><strong>Notes:</strong> ${data.notes}</p>
-          </div>
-        `;
+        let html = `<div class="info-card"><h3>Medical Information</h3>`;
+
+        const fields = [
+          { key: "name", label: "Name" },
+          { key: "age", label: "Age" },
+          { key: "emergencyContact", label: "Emergency Contact" },
+          { key: "allergies", label: "Allergies" },
+          { key: "blood", label: "Blood Type" },
+          { key: "diabetes", label: "Diabetes" },
+          { key: "highBP", label: "High Blood Pressure" },
+          { key: "lowBP", label: "Low Blood Pressure" },
+          { key: "strokes", label: "Stroke History" },
+          { key: "dnr", label: "DNR" },
+          { key: "organDonor", label: "Organ Donor" },
+          { key: "medicine", label: "Medicine Taken" },
+          { key: "asthma", label: "Asthma" },
+          { key: "smoke", label: "Smoker" },
+          { key: "epilepsy", label: "Epilepsy" },
+          { key: "notes", label: "Other Notes" }
+        ];
+
+        fields.forEach(field => {
+          if (data[field.key] && data[field.key].toLowerCase() !== "no" && data[field.key].trim() !== "") {
+            html += `<p><strong>${field.label}:</strong> ${data[field.key]}</p>`;
+          }
+        });
+
+        html += "</div>";
+        displayDiv.innerHTML = html;
       }).catch(err => {
         console.error(err);
         displayDiv.innerHTML = "<p>Error loading medical info.</p>";
       });
     }
 
-    // Profile panel toggle
+    // PROFILE PANEL TOGGLE
     const profileBtn = document.querySelector(".profile-btn");
     const profilePanel = document.getElementById("profilePanel");
     const darkModeToggle = document.getElementById("darkModeToggle");
@@ -105,35 +124,45 @@
     profileBtn.addEventListener("click", () => {
       if (profilePanel.style.left === "0px") {
         profilePanel.style.left = "-260px";
+        profileBtn.style.left = "10px";
       } else {
         profilePanel.style.left = "0px";
+        profileBtn.style.left = "260px";
       }
     });
 
-    // Dark mode toggle
+    // DARK MODE
     if (localStorage.getItem("darkMode") === "enabled") {
       document.body.classList.add("dark-mode");
       darkModeToggle.checked = true;
-      sunIcon.style.display = "none";
-      moonIcon.style.display = "block";
+      sunIcon.style.opacity = 1;
+      moonIcon.style.opacity = 0;
     } else {
-      sunIcon.style.display = "block";
-      moonIcon.style.display = "none";
+      sunIcon.style.opacity = 0;
+      moonIcon.style.opacity = 1;
+    }
+
+    function animateIcon(icon) {
+      icon.classList.add("rotate-icon");
+      setTimeout(() => icon.classList.remove("rotate-icon"), 600);
     }
 
     darkModeToggle.addEventListener("change", () => {
       if (darkModeToggle.checked) {
         document.body.classList.add("dark-mode");
         localStorage.setItem("darkMode", "enabled");
-        sunIcon.style.display = "none";
-        moonIcon.style.display = "block";
+        animateIcon(moonIcon);
+        sunIcon.style.opacity = 1;
+        moonIcon.style.opacity = 0;
       } else {
         document.body.classList.remove("dark-mode");
         localStorage.setItem("darkMode", "disabled");
-        sunIcon.style.display = "block";
-        moonIcon.style.display = "none";
+        animateIcon(sunIcon);
+        sunIcon.style.opacity = 0;
+        moonIcon.style.opacity = 1;
       }
     });
+
   </script>
 </body>
 </html>

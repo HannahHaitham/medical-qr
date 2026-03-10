@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,10 +9,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script type="module" src="script.js"></script>
 </head>
+
 <body>
 
-   <!-- PROFILE PANEL -->
-   <div id="profilePanel">
+  <!-- PROFILE PANEL -->
+  <div id="profilePanel">
     <h3 id="profilePanelTitle">Profile Settings</h3>
 
     <div class="language-container">
@@ -28,7 +30,7 @@
     <div class="toggle-container">
       <!-- Moon icon visible in light mode -->
       <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#555" width="24" height="24">
-        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
       </svg>
       <!-- Toggle switch -->
       <label class="switch">
@@ -37,16 +39,16 @@
       </label>
       <!-- Sun icon hidden in light mode -->
       <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#f5d547" width="24" height="24">
-        <circle cx="12" cy="12" r="5"/>
+        <circle cx="12" cy="12" r="5" />
         <g stroke="#f5d547" stroke-width="2">
-          <line x1="12" y1="1" x2="12" y2="3"/>
-          <line x1="12" y1="21" x2="12" y2="23"/>
-          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-          <line x1="1" y1="12" x2="3" y2="12"/>
-          <line x1="21" y1="12" x2="23" y2="12"/>
-          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          <line x1="12" y1="1" x2="12" y2="3" />
+          <line x1="12" y1="21" x2="12" y2="23" />
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+          <line x1="1" y1="12" x2="3" y2="12" />
+          <line x1="21" y1="12" x2="23" y2="12" />
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
         </g>
       </svg>
     </div>
@@ -55,11 +57,12 @@
 
   <!-- Profile Button -->
   <button class="profile-btn">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png" class="profile-pic" alt="Profile">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"
+      class="profile-pic" alt="Profile">
   </button>
 
   <div class="container">
-    <h2>Medical Information</h2>
+    <h2 id="medicalInfoTitle">Medical Information</h2>
     <div id="displayInfo"></div>
   </div>
 
@@ -89,12 +92,12 @@
     } else {
       getDoc(doc(db, "medicalProfiles", id)).then(docSnap => {
         if (!docSnap.exists()) {
-          displayDiv.innerHTML = "<p>No medical info found.</p>";
+          displayDiv.innerHTML = `<p id="noMedicalID">No medical ID provided.</p>`;
           return;
         }
 
         const data = docSnap.data();
-        let html = `<div class="info-card"><h3>Medical Information</h3>`;
+        let html = `<div class="info-card"><h3 id="medicalCardTitle">Medical Information</h3>`;
 
         const fields = [
           { key: "name", label: "Name" },
@@ -178,6 +181,167 @@
       }
     });
 
+    // --- LANGUAGE TRANSLATIONS & DYNAMIC UPDATE ---
+    const translations = {
+      en: {
+        title: "Medical Information",
+        noID: "No medical ID provided",
+        labels: {
+          name: "Name",
+          age: "Age",
+          emergencyContact: "Emergency Contact",
+          allergies: "Allergies",
+          blood: "Blood Type",
+          diabetes: "Diabetes",
+          highBP: "High Blood Pressure",
+          lowBP: "Low Blood Pressure",
+          strokes: "Stroke History",
+          dnr: "DNR",
+          organDonor: "Organ Donor",
+          medicine: "Medicine Taken",
+          asthma: "Asthma",
+          smoke: "Smoker",
+          epilepsy: "Epilepsy",
+          notes: "Other Notes"
+        }
+      },
+      fr: {
+        title: "Informations médicales",
+        noID: "Aucun identifiant médical fourni",
+        labels: {
+          name: "Nom",
+          age: "Âge",
+          emergencyContact: "Contact d'urgence",
+          allergies: "Allergies",
+          blood: "Groupe sanguin",
+          diabetes: "Diabète",
+          highBP: "Hypertension",
+          lowBP: "Hypotension",
+          strokes: "Antécédents d'AVC",
+          dnr: "DNR",
+          organDonor: "Donneur d'organes",
+          medicine: "Médicaments pris",
+          asthma: "Asthme",
+          smoke: "Fumeur",
+          epilepsy: "Épilepsie",
+          notes: "Autres notes"
+        }
+      },
+      es: {
+        title: "Información médica",
+        noID: "No se proporcionó identificación médica",
+        labels: {
+          name: "Nombre",
+          age: "Edad",
+          emergencyContact: "Contacto de emergencia",
+          allergies: "Alergias",
+          blood: "Tipo de sangre",
+          diabetes: "Diabetes",
+          highBP: "Presión alta",
+          lowBP: "Presión baja",
+          strokes: "Historial de derrames",
+          dnr: "DNR",
+          organDonor: "Donante de órganos",
+          medicine: "Medicamentos que toma",
+          asthma: "Asma",
+          smoke: "Fumador",
+          epilepsy: "Epilepsia",
+          notes: "Otras notas"
+        }
+      },
+      ar: {
+        title: "المعلومات الطبية",
+        noID: "لم يتم تقديم معرف طبي",
+        labels: {
+          name: "الاسم",
+          age: "العمر",
+          emergencyContact: "جهة اتصال الطوارئ",
+          allergies: "الحساسية",
+          blood: "فصيلة الدم",
+          diabetes: "السكري",
+          highBP: "ارتفاع ضغط الدم",
+          lowBP: "انخفاض ضغط الدم",
+          strokes: "تاريخ السكتات الدماغية",
+          dnr: "عدم الإنعاش",
+          organDonor: "متبرع بالأعضاء",
+          medicine: "الأدوية",
+          asthma: "الربو",
+          smoke: "مدخن",
+          epilepsy: "الصرع",
+          notes: "ملاحظات أخرى"
+        }
+      },
+      de: {
+        title: "Medizinische Informationen",
+        noID: "Keine medizinische ID angegeben",
+        labels: {
+          name: "Name",
+          age: "Alter",
+          emergencyContact: "Notfallkontakt",
+          allergies: "Allergien",
+          blood: "Blutgruppe",
+          diabetes: "Diabetes",
+          highBP: "Bluthochdruck",
+          lowBP: "Niedriger Blutdruck",
+          strokes: "Schlaganfallgeschichte",
+          dnr: "DNR",
+          organDonor: "Organspender",
+          medicine: "Eingenommene Medikamente",
+          asthma: "Asthma",
+          smoke: "Raucher",
+          epilepsy: "Epilepsie",
+          notes: "Weitere Notizen"
+        }
+      }
+    };
+
+    // --- LANGUAGE SELECT LOGIC ---
+    const languageSelect = document.getElementById("languageSelect");
+    let currentLang = localStorage.getItem("language") || "en";
+    languageSelect.value = currentLang;
+
+    function updateLanguage(lang) {
+      const t = translations[lang] || translations.en;
+
+      // Update static headings
+      const titleEl = document.getElementById("medicalInfoTitle");
+      if (titleEl) titleEl.textContent = t.title;
+
+      const cardTitle = document.getElementById("medicalCardTitle");
+      if (cardTitle) cardTitle.textContent = t.title;
+
+      const noIDEl = document.getElementById("noMedicalID");
+      if (noIDEl) noIDEl.textContent = t.noID;
+
+      // Update Firebase-generated labels dynamically
+      const infoCards = document.querySelectorAll(".info-card");
+      infoCards.forEach(card => {
+        Object.keys(t.labels).forEach(key => {
+          const p = Array.from(card.querySelectorAll("p"))
+            .find(el => el.innerHTML.startsWith(`<strong>${translations.en.labels[key]}</strong>`));
+          if (p) {
+            const value = p.innerHTML.split(":")[1];
+            p.innerHTML = `<strong>${t.labels[key]}:</strong>${value}`;
+          }
+        });
+      });
+    }
+
+    // Initial language update
+    updateLanguage(currentLang);
+
+    // Smooth transition on change
+    languageSelect.addEventListener("change", () => {
+      const newLang = languageSelect.value;
+      localStorage.setItem("language", newLang);
+      document.body.style.transition = "opacity 0.3s";
+      document.body.style.opacity = "0";
+      setTimeout(() => {
+        updateLanguage(newLang);
+        document.body.style.opacity = "1";
+      }, 300);
+    });
   </script>
 </body>
+
 </html>

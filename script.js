@@ -33,6 +33,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const darkModeToggle = document.getElementById("darkModeToggle");
   const sunIcon = document.getElementById("sunIcon");
   const moonIcon = document.getElementById("moonIcon");
+  const qrColorInput = document.getElementById("qrColor");
+  const savedColor = localStorage.getItem("qrColor") || qrColorInput.value;
 
   let lastID = localStorage.getItem("lastMedicalID");
 
@@ -85,12 +87,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         confirmBtn.style.display = "none";
 
         const url = `https://hannahhaitham.github.io/medical-qr/medical.html?id=${lastID}`;
+
         qrcodeDiv.innerHTML = "";
         new QRCode(qrcodeDiv, {
           text: url,
           width: 200,
           height: 200,
-          colorDark: "#1da1f2",
+          colorDark: qrColorInput.value,
           colorLight: "#ffffff",
           correctLevel: QRCode.CorrectLevel.H
         });
@@ -139,7 +142,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         text: url,
         width: 200,
         height: 200,
-        colorDark: "#1da1f2",
+        colorDark: qrColorInput.value,
         colorLight: "#ffffff",
         correctLevel: QRCode.CorrectLevel.H
       });

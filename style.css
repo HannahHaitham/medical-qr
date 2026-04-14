@@ -87,7 +87,7 @@ input, textarea, select {
   width: 100%;
   margin: 12px 0;
   padding: 10px 12px;
-  border: 2px solid #c0e6ff;
+  border: 2px solid #396b8c;
   border-radius: 10px;
   font-size: 14px;
   transition: 0.3s;
@@ -387,4 +387,46 @@ body.dark-mode .language-container select {
   background-color: #2a2a2a;
   color: #a0cfff;
   border-color: #42b8ff;
+}
+
+#qrColor {
+  width: 55px;
+  height: 55px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  background: none;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* hover effect */
+#qrColor:hover {
+  transform: scale(1.08);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+/* remove ugly default border in some browsers */
+#qrColor::-webkit-color-swatch-wrapper {
+  padding: 0;
+  border-radius: 50%;
+}
+
+#qrColor::-webkit-color-swatch {
+  border: none;
+  border-radius: 50%;
+}
+
+/* Firefox fix */
+#qrColor::-moz-color-swatch {
+  border: none;
+  border-radius: 50%;
+}
+
+label[for="qrColor"] {
+  display: block;
+  margin-top: 15px;
+  font-weight: 600;
+  color: #333;
 }

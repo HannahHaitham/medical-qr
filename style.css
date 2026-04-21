@@ -430,3 +430,160 @@ label[for="qrColor"] {
   font-weight: 600;
   color: #333;
 }
+
+.site-logo {
+  position: fixed;
+  top: 100px;
+  right: 25px;
+  width: 300px;
+  height: auto;
+  z-index: 999;
+
+  opacity: 0;
+  animation: fadeInLogo 0.8s ease forwards;
+}
+
+/* mobile hide */
+@media (max-width: 768px) {
+  .site-logo {
+    display: none;
+  }
+}
+
+/* animation MUST be outside media query */
+@keyframes fadeInLogo {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== APP HOME SCREEN (WHITE STYLE) ===== */
+
+.app-home {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
+  color: #0f172a;
+}
+
+/* Center card */
+.app-container {
+  text-align: center;
+  padding: 30px;
+  border-radius: 25px;
+
+  background: #f8fafc;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+
+  width: 85%;
+  max-width: 320px;
+
+  animation: fadeUp 0.8s ease;
+}
+
+/* App icon */
+.app-icon {
+  width: 110px;
+  height: 110px;
+  margin: 0 auto 20px;
+  border-radius: 30px;
+  overflow: hidden;
+
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.app-icon img {
+  width: 80%;
+}
+
+/* Title */
+h1 {
+  margin: 10px 0 5px;
+  font-size: 26px;
+}
+
+/* Subtitle */
+.subtitle {
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 25px;
+}
+
+/* Main button */
+.primary-btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 14px;
+
+  background: #1da1f2;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.primary-btn:hover {
+  transform: scale(1.03);
+  background: #0d8ddb;
+}
+
+/* Animation */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.secondary-btn {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: #e2e8f0;
+  color: #0f172a;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.secondary-btn:hover {
+  background: #cbd5e1;
+}
+
+.trust-text {
+  font-size: 12px;
+  color: #94a3b8;
+  margin-top: 15px;
+}
+
+.last-name {
+  font-size: 14px;
+  color: #0f172a;
+  margin-top: 10px;
+  font-weight: 500;
+}

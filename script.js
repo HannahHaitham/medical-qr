@@ -122,32 +122,29 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (!dataToSave.name) dataToSave.name = "No Name"; // always have a name
 
-    try {
-      if (!lastID) {
-        const docRef = await addDoc(collection(db, "medicalProfiles"), dataToSave);
-        lastID = docRef.id;
-        localStorage.setItem("lastMedicalID", lastID);
-      } else {
-        await setDoc(doc(db, "medicalProfiles", lastID), dataToSave);
-      }
-
-      form.querySelectorAll("input, textarea, select").forEach(el => el.disabled = true);
-      confirmBtn.style.display = "none";
-      editBtn.style.display = "flex";
-      deleteBtn.style.display = "flex";
-
-      const url = `https://hannahhaitham.github.io/medical-qr/medical.html?id=${lastID}`;
-      qrcodeDiv.innerHTML = "";
-      new QRCode(qrcodeDiv, {
-        text: url,
-        width: 200,
-        height: 200,
-        colorDark: qrColorInput.value,
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
-      });
+  try {
+    const docRef = await addDoc(collection(db, "medicalProfiles"), dataToSave);
+    lastID = docRef.id;
+    localStorage.setItem("lastMedicalID", lastID);
+  
+    const url = `https://hannahhaitham.github.io/medical-qr/medical.html?id=${lastID}`;
+      
+    qrcodeDiv.innerHTML = "";
+    new QRCode(qrcodeDiv, {
+      text: url,
+      width: 200,
+      height: 200,
+      colorDark: qrColorInput.value,
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.H
+    });
+    
       downloadBtn.style.display = "block";
-    } catch (err) { console.error(err); alert("Failed to save info."); }
+    
+  } catch (err) {
+    console.error(err);
+    alert("Failed to save info.");
+  }
   });
 
   // --- EDIT ---
@@ -440,10 +437,10 @@ if(heading) heading.textContent = t.formTitle;
 
 // medical.html support
 const medicalTitle = document.getElementById("medicalInfoTitle");
-if(medicalTitle) medicalTitle.textContent = t.medicalInfo;
+if(medicalTitle) medicalTitle.textContent = medicalInfoTitle;
 
 const cardTitle = document.getElementById("medicalCardTitle");
-if(cardTitle) cardTitle.textContent = t.medicalInfo;
+if(cardTitle) cardTitle.textContent = medicalInfoTitle;
 
 const noID = document.getElementById("noMedicalID");
 if(noID) noID.textContent = t.noMedicalID;
@@ -456,16 +453,27 @@ if(noID) noID.textContent = t.noMedicalID;
   }
 
   if(localStorage.getItem("darkMode")==="enabled"){
+    document.getElementById("siteLogo").src = "logo-dark.png";
     document.body.classList.add("dark-mode");
     darkModeToggle.checked = true;
     sunIcon.style.display = "block";
     moonIcon.style.display = "none";
   } else {
+    document.getElementById("siteLogo").src = "logo-light.png";
     sunIcon.style.display = "none";
     moonIcon.style.display = "block";
   }
 
   darkModeToggle.addEventListener("change", ()=>{
+
+    const logo = document.getElementById("siteLogo");
+
+    if (darkModeToggle.checked) {
+      logo.src = "logo-dark.png";
+    } else {
+      logo.src = "logo-light.png";
+    }
+
     if(darkModeToggle.checked){
       document.body.classList.add("dark-mode");
       localStorage.setItem("darkMode","enabled");

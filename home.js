@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // 🌙 LOGO THEME
     if (homeLogo) {
       const darkMode = localStorage.getItem("darkMode") === "enabled";
-      homeLogo.src = darkMode ? "logo-dark.png" : "logo-light.png";
+      homeLogo.src = darkMode ? "logo-light.png" : "logo-light.png";
     }
   
   });

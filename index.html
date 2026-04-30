@@ -1,42 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <br>
   <meta charset="UTF-8">
-  <title>Medical QR</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Medical QR - Home</title>
+  <link rel="stylesheet" href="css/styles.css">
 </head>
+<body>
 
-<body class="app-home">
+  <!-- <============= NAVBAR =============> -->
+  <nav class="glass-navbar">
+    <img src="imgs/logo-dark.png" alt="Medical QR Logo" class="nav-logo" id="navLogo">
+    <div class="nav-links">
+      <a href="index.html" id="navHomeText">Home</a>
+      <a href="pages/form.html" id="navProfileText">Create Profile</a>
+    </div>
+  </nav>
 
-  <div class="app-container">
-
-    <!-- Logo -->
+  <!-- <============= HOME SCREEN =============> -->
+  <div class="home-container">
+    
     <div class="app-icon">
-      <img src="logo-light.png" id="homeLogo">
+      <img src="imgs/logo-dark.png" id="homeLogo" alt="App Icon">
     </div>
 
-    <!-- Title -->
-    <h1>Medical QR</h1>
-    <p class="subtitle">Your emergency medical profile</p>
+    <h1 id="homeTitle">Medical QR</h1>
+    <p class="subtitle" id="homeSubtitle">Your emergency medical profile</p>
 
-    <p id="lastNameText" class="last-name"></p>
+    <p id="lastNameText" class="last-name" style="display: none;"></p>
 
-    <!-- Start Button -->
-    <button class="primary-btn" id="startBtn">
-      Create QR
-    </button>
+    <div class="home-actions">
+      <button class="btn-primary" id="startBtn">
+        Create New QR
+      </button>
+      
+      <button class="btn-secondary" id="continueBtn" style="display: none;">
+        Continue Last Profile
+      </button>
+    </div>
 
-    <!-- Continue Button -->
-    <button class="secondary-btn" id="continueBtn">
-      Continue Last Profile
-    </button>
+    <p class="trust-text" id="homeTrustText" style="margin-top: 32px; font-size: 13px; color: var(--text-secondary);">
+      Your data is private and securely stored
+    </p>
 
-    <!-- Small text -->
-    <p class="trust-text">Your data is private and securely stored</p>
+    <p id="homeCreditsText" style="margin-top: 16px; font-size: 12px; color: var(--text-secondary); font-weight: 500;">
+      Designed & Developed by Hannah
+    </p>
 
   </div>
 
-  <script src="home.js"></script>
+  <script src="js/home.js"></script>
 
 </body>
 </html>
